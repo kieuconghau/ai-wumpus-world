@@ -5,3 +5,6 @@
 .idea/misc.xml
 .idea/vcs.xml
 .idea/workspace.xml
+__pycache__/Graphic.cpython-37.pyc
+__pycache__/Map.cpython-37.pyc
+__pycache__/Specification.cpython-37.pyc
