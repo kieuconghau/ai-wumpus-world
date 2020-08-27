@@ -13,6 +13,9 @@ class Graphic:
         self.agent = Agent()
         self.font = pygame.font.Font(FONT_MRSMONSTER, 30)
         self.text = self.font.render('Your score:', True, BLACK)
+        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.agent)
+        self.count = 2
 
     def draw(self):
         self.screen.fill(WHITE)
@@ -20,11 +23,12 @@ class Graphic:
         textRect = self.text.get_rect()
         textRect.center = (790, 25)
         self.screen.blit(self.text, textRect)
-        self.agent.update(self.screen, self.font)
-        pygame.display.update()
 
     def run(self):
         self.draw()
+        self.agent.appear(self.screen)
+        pygame.display.update()
+
         while True:
             self.clock.tick(60)
 
@@ -32,3 +36,28 @@ class Graphic:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        self.agent.move_down()
+                        self.all_sprites.update()
+                        self.draw()
+                        self.all_sprites.draw(self.screen)
+                        pygame.display.update()
+                    elif event.key == pygame.K_UP:
+                        self.agent.move_up()
+                        self.all_sprites.update()
+                        self.draw()
+                        self.all_sprites.draw(self.screen)
+                        pygame.display.update()
+                    elif event.key == pygame.K_LEFT:
+                        self.agent.move_left()
+                        self.all_sprites.update()
+                        self.draw()
+                        self.all_sprites.draw(self.screen)
+                        pygame.display.update()
+                    elif event.key == pygame.K_RIGHT:
+                        self.agent.move_right()
+                        self.all_sprites.update()
+                        self.draw()
+                        self.all_sprites.draw(self.screen)
+                        pygame.display.update()
