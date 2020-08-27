@@ -33,3 +33,6 @@
         - TryYourBest: hiện màn hình TryYourBest.
 
 Lưu ý: state mặc định là TryYourBest (tức thoát được hang nhưng chưa giết hết Wumpus và chưa nhặt hết Gold).
+
+## Tọa độ của Map
+<p align='center'><img align='center' src="Assets/Readme/map_coordinate.png" alt='Map Coordinate'></p>
