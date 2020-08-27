@@ -11,28 +11,58 @@ class Object(Enum):
 
 
 class Cell:
-    def __init__(self, pos, objects_str):
-        self.pos = pos
+    def __init__(self, pos, map_size, objects_str):
+        self.pos = pos                                                  # (1, 1) (1, 2) ... (10, 10)
+        self.index_pos = map_size * (self.pos[1] - 1) + self.pos[0]     # 1 2 3 ... 99 100
+        self.map_size = map_size
         self.explored = False
-        self.object_list = [False, False, False, False, False]  # [-G, -P, -W, -B, -S]
+        self.percept = [False, False, False, False, False]  # [-G, -P, -W, -B, -S]
         self.init(objects_str)
 
 
     def init(self, objects_str):
         for obj in objects_str:
             if obj == Object.GOLD.value:
-                self.object_list[0] = True
+                self.percept[0] = True
             elif obj == Object.PIT.value:
-                self.object_list[1] = True
+                self.percept[1] = True
             elif obj == Object.WUMPUS.value:
-                self.object_list[2] = True
+                self.percept[2] = True
             elif obj == Object.BREEZE.value:
-                self.object_list[3] = True
+                self.percept[3] = True
             elif obj == Object.STENCH.value:
-                self.object_list[4] = True
+                self.percept[4] = True
             elif obj == Object.AGENT.value:
                 continue
             elif obj == Object.EMPTY.value:
                 continue
             else:
-                print('Error: Cell.init')
+                raise TypeError('Error: Cell.init')
+
+
+    def exist_gold(self):
+        return self.percept[0]
+
+    def exist_pit(self):
+        return self.percept[1]
+
+    def exist_wumpus(self):
+        return self.percept[2]
+
+    def exist_breeze(self):
+        return self.percept[3]
+
+    def exist_stench(self):
+        return self.percept[4]
+
+
+    def get_clause(self):
+        clause = []
+
+        for i in range(1, len(self.percept)):
+            literal = 1000 * i + self.index_pos         # P: 1, W: 2, B: 3, S: 4
+            if not self.percept[i]:
+                literal *= -1
+            clause.append(literal)
+
+        return clause
