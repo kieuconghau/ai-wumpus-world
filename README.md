@@ -9,22 +9,24 @@
     - Trừ 10 điểm.
 6. Pick up Gold
     - Cộng 100 điểm.
-7. Shoot an Arrow
+7. Perceive Breeze
+8. Perceive Stench
+9. Shoot an Arrow
     - Trừ 100 điểm.
-8. Kill Wumpus
+10. Kill Wumpus
     - Ô chứa Wumpus bị bắn chính là ô phía trước mặt của Agent, ô này được explored.
     - Bỏ các Stench xung quanh của ô chứa Wumpus này.
-9. Be eaten by Wumpus
+11. Be eaten by Wumpus
     - Trừ 10000 điểm.
     - Set state thành Gameover.
     - Hiện màn hình Gameover.
-10. Fall into Pit
+12. Fall into Pit
     - Trừ 10000 điểm.
     - Set state thành Gameover.
     - Hiện màn hình Gameover.
-11. Kill all Wumpus and Grab all Gold
+13. Kill all Wumpus and Grab all Gold
     - Set state thành Victory.
-12. Climb out of the cave.
+14. Climb out of the cave.
     - Cộng 10 điểm.
     - Nếu state hiện tại là:
         - Victory: hiện màn hình Victory.
