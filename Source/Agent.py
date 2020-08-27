@@ -4,7 +4,7 @@ from Specification import *
 class Agent(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.hunter = pygame.image.load('hunter_right.png').convert()
+        self.hunter = pygame.image.load(IMG_HUNTER_RIGHT).convert()
         self.score = 0
 
     def draw_score(self, screen, font):

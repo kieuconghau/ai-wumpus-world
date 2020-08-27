@@ -1,7 +1,7 @@
-from Map import *
-from Specification import *
 import sys
+from Map import *
 from Agent import *
+
 class Graphic:
     def __init__(self):
         pygame.init()
@@ -11,8 +11,9 @@ class Graphic:
         self.clock = pygame.time.Clock()
         self.map = Map()
         self.agent = Agent()
-        self.font = pygame.font.Font('mrsmonster.ttf', 30)
+        self.font = pygame.font.Font(FONT_MRSMONSTER, 30)
         self.text = self.font.render('Your score:', True, BLACK)
+
     def draw(self):
         self.screen.fill(WHITE)
         self.map.draw(self.screen)
@@ -21,6 +22,7 @@ class Graphic:
         self.screen.blit(self.text, textRect)
         self.agent.update(self.screen, self.font)
         pygame.display.update()
+
     def run(self):
         self.draw()
         while True:
