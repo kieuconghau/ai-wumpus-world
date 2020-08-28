@@ -10,6 +10,7 @@ class Graphic:
         self.caption = pygame.display.set_caption(CAPTION)
         self.clock = pygame.time.Clock()
         self.map = Map()
+        self.arrow = Arrow()
         self.agent = Agent(1, 1)
         self.agent.load_image()
         self.font = pygame.font.Font(FONT_MRSMONSTER, 30)

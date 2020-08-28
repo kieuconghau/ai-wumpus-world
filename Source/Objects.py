@@ -30,14 +30,28 @@ class Wumpus:
     def draw(self, screen):
         screen.blit(self.image, self.pos)
 
-    def pit_discovered(self):
+    def wumpus_discovered(self):
         self.is_discovered = True
 
     def update(self, screen):
         if self.is_discovered:
             self.draw(screen)
             pygame.display.update()
+class Gold:
+    def __init__(self):
+        self.image = pygame.image.load(IMG_GOLD).convert()
+        self.pos = (840, 150)
+        self.is_discovered = False
 
+    def draw(self, screen):
+        screen.blit(self.image, self.pos)
+    def gold_discovered(self):
+        self.is_discovered = True
+
+    def update(self, screen):
+        if self.is_discovered:
+            self.draw(screen)
+            pygame.display.update()
 class Arrow:
     def __init__(self):
         self.img_list = []
@@ -45,3 +59,7 @@ class Arrow:
         for i in range(0, 4):
             img = pygame.image.load(temp[i]).convert()
             self.img_list.append(img)
+
+    def shoot(self, screen, x, y):
+        screen.blit(self.img_list[0], (x, y))
+

@@ -1,6 +1,6 @@
 import pygame
 from Specification import *
-
+from Objects import *
 
 class Agent(pygame.sprite.Sprite):
     def __init__(self, x, y):
