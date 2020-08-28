@@ -18,6 +18,10 @@ IMG_HUNTER_LEFT = '../Assets/Images/hunter_left.png'
 IMG_HUNTER_UP = '../Assets/Images/hunter_up.png'
 IMG_HUNTER_DOWN = '../Assets/Images/hunter_down.png'
 
+IMG_ARROW_RIGHT = '../Assets/Images/arrow_right.png'
+IMG_ARROW_LEFT = '../Assets/Images/arrow_left.png'
+IMG_ARROW_UP = '../Assets/Images/arrow_up.png'
+IMG_ARROW_DOWN = '../Assets/Images/arrow_down.png'
 # Map
 MAP_LIST = ['../Assets/Input/map_1.txt',
             '../Assets/Input/map_2.txt',

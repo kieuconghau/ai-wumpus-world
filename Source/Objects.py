@@ -37,3 +37,11 @@ class Wumpus:
         if self.is_discovered:
             self.draw(screen)
             pygame.display.update()
+
+class Arrow:
+    def __init__(self):
+        self.img_list = []
+        temp = [IMG_ARROW_RIGHT, IMG_ARROW_LEFT, IMG_ARROW_UP, IMG_ARROW_DOWN]
+        for i in range(0, 4):
+            img = pygame.image.load(temp[i]).convert()
+            self.img_list.append(img)

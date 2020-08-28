@@ -86,5 +86,7 @@ class Agent(pygame.sprite.Sprite):
         pygame.display.update()
 
     def get_pos(self):
-        print(self.i, self.j)
         return self.i, self.j
+
+
+
