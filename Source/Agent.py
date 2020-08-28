@@ -13,8 +13,8 @@ class Agent(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
         self.spacing = 70
-        self.smell_sound = pygame.mixer.Sound('Sniff.wav')
-        self.wind_sound = pygame.mixer.Sound('wind.wav')
+
+
         self.i = x - 1
         self.j = y - 1
 
@@ -78,7 +78,6 @@ class Agent(pygame.sprite.Sprite):
         self.rect.center = (self.x, self.y)
 
     def smell_stench(self, screen, font):
-        #self.smell_sound.play(0)
         text = font.render('You smell stench!!!', True, BLACK)
         textRect = text.get_rect()
         textRect.center = (840, 80)

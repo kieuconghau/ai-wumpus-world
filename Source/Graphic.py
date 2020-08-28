@@ -72,7 +72,3 @@ class Graphic:
                         self.all_sprites.draw(self.screen)
                         pygame.display.update()
 
-
-
-
-

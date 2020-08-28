@@ -6,6 +6,7 @@ class Pit:
         self.image = pygame.image.load(IMG_PIT).convert()
         self.pos = (x, y)
         self.is_discovered = False
+        self.wind_sound = pygame.mixer.Sound('wind.wav')
 
     def draw(self, screen):
         screen.blit(self.image, self.pos)
@@ -26,6 +27,7 @@ class Wumpus:
         self.image = pygame.image.load(IMG_WUMPUS).convert()
         self.pos = (x, y)
         self.is_discovered = False
+        self.smell_sound = pygame.mixer.Sound('Sniff.wav')
 
     def draw(self, screen):
         screen.blit(self.image, self.pos)
@@ -60,6 +62,20 @@ class Arrow:
             img = pygame.image.load(temp[i]).convert()
             self.img_list.append(img)
 
-    def shoot(self, screen, x, y):
+    def shoot_right(self, screen, x, y):
         screen.blit(self.img_list[0], (x, y))
+        pygame.display.update()
+
+    def shoot_left(self, screen, x, y):
+        screen.blit(self.img_list[1], (x, y))
+        pygame.display.update()
+
+    def shoot_up(self, screen, x, y):
+        screen.blit(self.img_list[2], (x, y))
+        pygame.display.update()
+
+    def shoot_down(self, screen, x, y):
+        screen.blit(self.img_list[3], (x, y))
+        pygame.display.update()
+
 
