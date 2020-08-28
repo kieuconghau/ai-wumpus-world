@@ -7,6 +7,7 @@ class Pit:
         self.pos = (x, y)
         self.is_discovered = False
         self.wind_sound = pygame.mixer.Sound('wind.wav')
+        self.noti_discover = [[False for i in range(self.size)] for j in range(self.size)]
 
     def draw(self, screen):
         screen.blit(self.image, self.pos)

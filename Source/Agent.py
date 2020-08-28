@@ -77,15 +77,19 @@ class Agent(pygame.sprite.Sprite):
 
         self.rect.center = (self.x, self.y)
 
-    def smell_stench(self, screen, font):
-        text = font.render('You smell stench!!!', True, BLACK)
-        textRect = text.get_rect()
-        textRect.center = (840, 80)
-        screen.blit(text, textRect)
-        pygame.display.update()
+    #def smell_stench(self, screen, font):
+     #   text = font.render('You smell stench!!!', True, BLACK)
+      #  textRect = text.get_rect()
+       # textRect.center = (840, 80)
+        #screen.blit(text, textRect)
+        #pygame.display.update()
 
     def get_pos(self):
         return self.i, self.j
 
+    def shoot(self):
+        self.score -= 100
 
+    def wumpus_or_pit_collision(self):
+        self.score -= 10000
 
