@@ -26,6 +26,8 @@ class Algorithms:
         self.cell_matrix = None
         self.agent_cell = None
         self.read_map(map_filename)
+
+        self.path = []
         self.action_list = []
         self.KB = []
 
