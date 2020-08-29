@@ -11,9 +11,13 @@ class Graphic:
         self.clock = pygame.time.Clock()
         self.map = Map()
         self.arrow = Arrow()
+        self.wumpus = Wumpus(1, 1)
+        self.pit = Pit(1, 1)
+        self.gold = Gold()
         self.agent = Agent(1, 1)
         self.agent.load_image()
         self.font = pygame.font.Font(FONT_MRSMONSTER, 30)
+        self.noti = pygame.font.Font(FONT_MRSMONSTER, 15)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.agent)
 
@@ -30,7 +34,7 @@ class Graphic:
         self.draw()
         self.agent.appear(self.screen)
         pygame.display.update()
-        self.agent.smell_stench(self.screen, self.font)
+
         while True:
             self.clock.tick(60)
 
@@ -45,30 +49,16 @@ class Graphic:
                         self.map.discover_cell_i_j(i, j)
                         self.all_sprites.update()
                         self.draw()
+                        self.wumpus.update(self.screen, self.noti)
                         self.all_sprites.draw(self.screen)
                         pygame.display.update()
-                    elif event.key == pygame.K_UP:
-                        self.agent.move_up()
+                    elif event.key == pygame.K_SPACE:
+                        self.wumpus.wumpus_killed(3, 1)
                         i, j = self.agent.get_pos()
                         self.map.discover_cell_i_j(i, j)
                         self.all_sprites.update()
                         self.draw()
                         self.all_sprites.draw(self.screen)
                         pygame.display.update()
-                    elif event.key == pygame.K_LEFT:
-                        self.agent.move_left()
-                        i, j = self.agent.get_pos()
-                        self.map.discover_cell_i_j(i, j)
-                        self.all_sprites.update()
-                        self.draw()
-                        self.all_sprites.draw(self.screen)
-                        pygame.display.update()
-                    elif event.key == pygame.K_RIGHT:
-                        self.agent.move_right()
-                        i, j = self.agent.get_pos()
-                        self.map.discover_cell_i_j(i, j)
-                        self.all_sprites.update()
-                        self.draw()
-                        self.all_sprites.draw(self.screen)
-                        pygame.display.update()
+
 

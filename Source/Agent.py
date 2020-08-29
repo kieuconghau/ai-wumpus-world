@@ -77,12 +77,7 @@ class Agent(pygame.sprite.Sprite):
 
         self.rect.center = (self.x, self.y)
 
-    #def smell_stench(self, screen, font):
-     #   text = font.render('You smell stench!!!', True, BLACK)
-      #  textRect = text.get_rect()
-       # textRect.center = (840, 80)
-        #screen.blit(text, textRect)
-        #pygame.display.update()
+
 
     def get_pos(self):
         return self.i, self.j
