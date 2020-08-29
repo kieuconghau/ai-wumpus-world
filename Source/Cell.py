@@ -11,13 +11,18 @@ class Object(Enum):
 
 
 class Cell:
-    def __init__(self, pos, map_size, objects_str):
-        self.pos = pos                                                  # (1, 1) (1, 2) ... (10, 10)
-        self.index_pos = map_size * (self.pos[1] - 1) + self.pos[0]     # 1 2 3 ... 99 100
+    def __init__(self, matrix_pos, map_size, objects_str):
+        self.matrix_pos = matrix_pos                                            # (0, 0) (0, 1) ... (9, 9)   (TL -> BR)
+        self.map_pos = matrix_pos[1] + 1, map_size - matrix_pos[0]              # (1, 1) (1, 2) ... (10, 10) (BL -> TR)
+        self.index_pos = map_size * (self.map_pos[1] - 1) + self.map_pos[0]     # 1 2 3 ... 99 100           (BL -> TR)
         self.map_size = map_size
+
         self.explored = False
         self.percept = [False, False, False, False, False]  # [-G, -P, -W, -B, -S]
         self.init(objects_str)
+
+        self.parent = None
+        self.child_list = []
 
 
     def init(self, objects_str):
@@ -55,14 +60,79 @@ class Cell:
     def exist_stench(self):
         return self.percept[4]
 
+    def is_OK(self):
+        return not self.exist_breeze() and not self.exist_stench()
 
-    def get_clause(self):
-        clause = []
 
-        for i in range(1, len(self.percept)):
-            literal = 1000 * i + self.index_pos         # P: 1, W: 2, B: 3, S: 4
-            if not self.percept[i]:
-                literal *= -1
-            clause.append(literal)
+    def update_parent(self, parent_cell):
+        self.parent = parent_cell
 
-        return clause
+
+    def grab_gold(self):
+        if self.percept[0]:
+            self.percept[0] = False
+
+
+    def kill_wumpus(self, cell_matrix):
+        # Delete Wumpus.
+        self.percept[2] = False
+
+        # Delete Stench of adjacent cells.
+        adj_cell_list_of_wumpus_cell = self.get_adj_cell_list(cell_matrix)
+        for stench_cell in adj_cell_list_of_wumpus_cell:
+            del_stench_flag = True
+            adj_cell_list_of_stench_cell = stench_cell.get_adj_cell_list(cell_matrix)
+            for adj_cell in adj_cell_list_of_stench_cell:
+                if adj_cell.exist_wumpus():
+                    del_stench_flag = False
+                    break
+            if del_stench_flag:
+                stench_cell.percept[4] = False
+
+
+    def get_adj_cell_list(self, cell_matrix):
+        adj_cell_list = []
+        adj_cell_matrix_pos_list = [(self.matrix_pos[0], self.matrix_pos[1] + 1),   # Right
+                                    (self.matrix_pos[0], self.matrix_pos[1] - 1),   # Left
+                                    (self.matrix_pos[0] - 1, self.matrix_pos[1]),   # Up
+                                    (self.matrix_pos[0] + 1, self.matrix_pos[1])]   # Down
+
+        for ajd_cell_matrix_pos in adj_cell_matrix_pos_list:
+            if 0 <= ajd_cell_matrix_pos[0] < self.map_size and 0 <= ajd_cell_matrix_pos[1] < self.map_size:
+                adj_cell_list.append(cell_matrix[ajd_cell_matrix_pos[0]][ajd_cell_matrix_pos[1]])
+
+        return adj_cell_list
+
+
+    def is_explored(self):
+        return self.explored
+
+    def explore(self):
+        self.explored = True
+
+
+    def update_child_list(self, valid_adj_cell_list):
+        for adj_cell in valid_adj_cell_list:
+            if adj_cell.parent is None:
+                self.child_list.append(adj_cell)
+                adj_cell.update_parent(self)
+
+
+    def get_literal(self, obj: Object, sign='+'):    # sign='-': not operator
+        if obj == Object.PIT:
+            i = 1
+        elif obj == Object.WUMPUS:
+            i = 2
+        elif obj == obj.BREEZE:
+            i = 3
+        elif obj == obj.STENCH:
+            i = 4
+        else:
+            raise TypeError('Error: ' + self.get_literal.__name__)
+
+        factor = 10 ** len(str(self.map_size * self.map_size))
+        literal = i * factor + self.index_pos
+        if sign == '-':
+            literal *= -1
+
+        return literal
