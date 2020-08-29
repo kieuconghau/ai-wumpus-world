@@ -27,28 +27,31 @@ class Pit:
 class Wumpus:
     def __init__(self, x, y):
         self.image = pygame.image.load(IMG_WUMPUS).convert()
-        self.pos = (x, y)
         self.size = 10
         self.is_discovered = False
         self.smell_sound = pygame.mixer.Sound('Sniff.wav')
         self.noti_discover = [[False for i in range(self.size)] for j in range(self.size)]
-        self.is_killed = False
-        self.noti_discover[3][0] = True
-        self.noti_discover[2][1] = True
-        self.noti_discover[4][1] = True
-        self.noti_discover[3][2] = True
-
-    def draw(self, screen):
-        screen.blit(self.image, self.pos)
+        self.wumpus_pos = [[False for i in range(self.size)] for j in range(self.size)]
+        for i in range(len(x)):
+            self.wumpus_pos[x[i]][y[i]] = True
 
     def wumpus_discovered(self):
         self.is_discovered = True
 
-    def wumpus_notification(self, i, j):
-        self.noti_discover[i][j] = True
-
+    def wumpus_notification(self):
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.wumpus_pos[i][j]:
+                    if i > 0:
+                        self.noti_discover[i - 1][j] = True
+                    if i < self.size - 1:
+                        self.noti_discover[i + 1][j] = True
+                    if j > 0:
+                        self.noti_discover[i][j - 1] = True
+                    if j < self.size - 1:
+                        self.noti_discover[i][j + 1] = True
     def wumpus_killed(self, i, j):
-        self.is_killed = True
+        self.wumpus_pos[i][j] = False
         if i > 0:
             self.noti_discover[i-1][j] = False
         if i < self.size - 1:

@@ -36,3 +36,8 @@ FONT_MRSMONSTER = '../Assets/Fonts/mrsmonster.ttf'
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+
+#state
+RUNNING = 'running'
+GAMEOVER = 'gameover'
+MAP = 'map'

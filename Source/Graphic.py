@@ -20,6 +20,7 @@ class Graphic:
         self.noti = pygame.font.Font(FONT_MRSMONSTER, 15)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.agent)
+        self.state = RUNNING
 
     def draw(self):
         self.screen.fill(WHITE)
