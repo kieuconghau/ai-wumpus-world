@@ -1,3 +1,5 @@
+import pygame
+
 # Window
 SCREEN_WIDTH = 970
 SCREEN_HEIGHT = 710
@@ -18,6 +20,10 @@ IMG_HUNTER_LEFT = '../Assets/Images/hunter_left.png'
 IMG_HUNTER_UP = '../Assets/Images/hunter_up.png'
 IMG_HUNTER_DOWN = '../Assets/Images/hunter_down.png'
 
+IMG_ARROW_RIGHT = '../Assets/Images/arrow_right.png'
+IMG_ARROW_LEFT = '../Assets/Images/arrow_left.png'
+IMG_ARROW_UP = '../Assets/Images/arrow_up.png'
+IMG_ARROW_DOWN = '../Assets/Images/arrow_down.png'
 # Map
 MAP_LIST = ['../Assets/Input/map_1.txt',
             '../Assets/Input/map_2.txt',
@@ -32,3 +38,18 @@ FONT_MRSMONSTER = '../Assets/Fonts/mrsmonster.ttf'
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+LIGHT_GREY = (170, 170, 170)
+DARK_GREY = (75, 75, 75)
+RED = (255, 0, 0)
+
+#state
+RUNNING = 'running'
+GAMEOVER = 'gameover'
+MAP = 'map'
+
+LEVEL_1_POS = pygame.Rect(235, 120, 500, 50)
+LEVEL_2_POS = pygame.Rect(235, 200, 500, 50)
+LEVEL_3_POS = pygame.Rect(235, 280, 500, 50)
+LEVEL_4_POS = pygame.Rect(235, 360, 500, 50)
+LEVEL_5_POS = pygame.Rect(235, 440, 500, 50)
+EXIT_POS = pygame.Rect(235, 520, 500, 50)
