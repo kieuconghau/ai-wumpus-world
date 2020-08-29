@@ -50,6 +50,7 @@ class Wumpus:
                         self.noti_discover[i][j - 1] = True
                     if j < self.size - 1:
                         self.noti_discover[i][j + 1] = True
+
     def wumpus_killed(self, i, j):
         self.wumpus_pos[i][j] = False
         if i > 0:
@@ -70,6 +71,8 @@ class Wumpus:
                     textRect.center = (40 + i * 70, 25 + j * 70)
                     screen.blit(text, textRect)
                     pygame.display.update()
+
+
 class Gold:
     def __init__(self):
         self.image = pygame.image.load(IMG_GOLD).convert()
@@ -78,6 +81,7 @@ class Gold:
 
     def draw(self, screen):
         screen.blit(self.image, self.pos)
+
     def gold_discovered(self):
         self.is_discovered = True
 
@@ -85,6 +89,8 @@ class Gold:
         if self.is_discovered:
             self.draw(screen)
             pygame.display.update()
+
+
 class Arrow:
     def __init__(self):
         self.img_list = []

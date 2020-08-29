@@ -1,6 +1,7 @@
 import sys
 from Map import *
 from Agent import *
+import Algorithms
 
 class Graphic:
     def __init__(self):
@@ -22,6 +23,7 @@ class Graphic:
         self.all_sprites.add(self.agent)
         self.state = MAP
         self.map_i = 1
+        self.mouse = None
 
     def running_draw(self):
         self.screen.fill(WHITE)
@@ -66,6 +68,7 @@ class Graphic:
                 elif 235 <= self.mouse[0] <= 735 and 520 <= self.mouse[1] <= 570:
                     pygame.quit()
                     sys.exit()
+
             self.mouse = pygame.mouse.get_pos()
             if 235 <= self.mouse[0] <= 735 and 120 <= self.mouse[1] <= 170:
                 self.draw_button(self.screen, LEVEL_1_POS, DARK_GREY, RED, "MAP 1")
@@ -94,36 +97,92 @@ class Graphic:
             pygame.display.update()
 
     def run(self):
-        '''self.running_draw()
-        self.agent.appear(self.screen)
-        pygame.display.update()'''
-
         while True:
             if self.state == MAP:
                 self.home_draw()
                 self.home_event()
+
+            elif self.state == RUNNING:
+                self.running_draw()
+
+                action_list = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
+
+                for action in action_list:
+                    self.display_action(action)
+
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                    pygame.time.delay(100)
+
+                self.state = MAP
+
             self.clock.tick(60)
-            '''for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:
-                        self.agent.move_down()
-                        i, j = self.agent.get_pos()
-                        self.map.discover_cell_i_j(i, j)
-                        self.all_sprites.update()
-                        self.running_draw()
-                        self.wumpus.update(self.screen, self.noti)
-                        self.all_sprites.draw(self.screen)
-                        pygame.display.update()
-                    elif event.key == pygame.K_SPACE:
-                        self.wumpus.wumpus_killed(3, 1)
-                        i, j = self.agent.get_pos()
-                        self.map.discover_cell_i_j(i, j)
-                        self.all_sprites.update()
-                        self.running_draw()
-                        self.all_sprites.draw(self.screen)
-                        pygame.display.update()'''
 
 
+    def display_action(self, action: Algorithms.Action):
+        if action == Algorithms.Action.TURN_LEFT:
+            self.agent.move_left()
+            i, j = self.agent.get_pos()
+            self.map.discover_cell_i_j(i, j)
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            pygame.display.update()
+        elif action == Algorithms.Action.TURN_RIGHT:
+            self.agent.move_right()
+            i, j = self.agent.get_pos()
+            self.map.discover_cell_i_j(i, j)
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            pygame.display.update()
+        elif action == Algorithms.Action.TURN_UP:
+            self.agent.move_up()
+            i, j = self.agent.get_pos()
+            self.map.discover_cell_i_j(i, j)
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            pygame.display.update()
+        elif action == Algorithms.Action.TURN_DOWN:
+            self.agent.move_down()
+            i, j = self.agent.get_pos()
+            self.map.discover_cell_i_j(i, j)
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            pygame.display.update()
+        elif action == Algorithms.Action.MOVE_FORWARD:
+            pass
+        elif action == Algorithms.Action.GRAB_GOLD:
+            pass
+        elif action == Algorithms.Action.PERCEIVE_BREEZE:
+            pass
+        elif action == Algorithms.Action.PERCEIVE_STENCH:
+            pass
+        elif action == Algorithms.Action.SHOOT:
+            pass
+        elif action == Algorithms.Action.KILL_WUMPUS:
+            pass
+        elif action == Algorithms.Action.KILL_NO_WUMPUS:
+            pass
+        elif action == Algorithms.Action.BE_EATEN_BY_WUMPUS:
+            pass
+        elif action == Algorithms.Action.FALL_INTO_PIT:
+            pass
+        elif action == Algorithms.Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD:
+            pass
+        elif action == Algorithms.Action.CLIMB_OUT_OF_THE_CAVE:
+            pass
+        elif action == Algorithms.Action.DECTECT_PIT:
+            pass
+        elif action == Algorithms.Action.DETECT_WUMPUS:
+            pass
+        elif action == Algorithms.Action.DETECT_NO_PIT:
+            pass
+        elif action == Algorithms.Action.DETECT_NO_WUMPUS:
+            pass
+        else:
+            raise TypeError("Error: " + self.display_action.__name__)

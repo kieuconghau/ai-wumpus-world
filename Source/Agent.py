@@ -22,6 +22,7 @@ class Agent(pygame.sprite.Sprite):
         for i in range (0, 3):
             img = pygame.image.load(temp[i]).convert()
             self.img_list.append(img)
+
     def appear(self, screen):
         screen.blit(self.image, (self.x - 30, self.y - 30))
 

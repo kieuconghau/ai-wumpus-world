@@ -121,6 +121,7 @@ class AgentBrain:
             raise TypeError("Error: " + self.add_action.__name__)
 
         print(action)
+        print('Score: ' + str(self.score))
 
 
     def add_new_percepts_to_KB(self, cell):
@@ -220,9 +221,6 @@ class AgentBrain:
 
         self.add_action(Action.MOVE_FORWARD)
         self.agent_cell = next_cell
-
-        print("Move to: ", end='')
-        print(self.agent_cell.map_pos)
 
 
     def backtracking_search(self):
@@ -376,14 +374,17 @@ class AgentBrain:
 
             for next_cell in self.agent_cell.child_list:
                 self.move_to(next_cell)
+                print("Move to: ", end='')
+                print(self.agent_cell.map_pos)
 
                 if not self.backtracking_search():
                     return False
 
+                self.move_to(pre_agent_cell)
                 print("Backtrack: ", end='')
                 print(pre_agent_cell.map_pos)
 
-            self.agent_cell = pre_agent_cell
+            #self.agent_cell = pre_agent_cell
 
             if pre_kb_len == len(self.KB.KB):
                 try_again_flag = False
@@ -425,9 +426,6 @@ class AgentBrain:
     def solve_wumpus_world(self):
         self.backtracking_search()
 
-        if self.agent_cell.parent == self.cave_cell:
-            self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
-
         victory_flag = True
         for cell_row in self.cell_matrix:
             for cell in cell_row:
@@ -436,5 +434,8 @@ class AgentBrain:
                     break
         if victory_flag:
             self.add_action(Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD)
+
+        if self.agent_cell.parent == self.cave_cell:
+            self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
 
         return self.action_list
