@@ -1,3 +1,5 @@
+import pygame
+
 # Window
 SCREEN_WIDTH = 970
 SCREEN_HEIGHT = 710
@@ -36,8 +38,18 @@ FONT_MRSMONSTER = '../Assets/Fonts/mrsmonster.ttf'
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+LIGHT_GREY = (170, 170, 170)
+DARK_GREY = (75, 75, 75)
+RED = (255, 0, 0)
 
 #state
 RUNNING = 'running'
 GAMEOVER = 'gameover'
 MAP = 'map'
+
+LEVEL_1_POS = pygame.Rect(235, 120, 500, 50)
+LEVEL_2_POS = pygame.Rect(235, 200, 500, 50)
+LEVEL_3_POS = pygame.Rect(235, 280, 500, 50)
+LEVEL_4_POS = pygame.Rect(235, 360, 500, 50)
+LEVEL_5_POS = pygame.Rect(235, 440, 500, 50)
+EXIT_POS = pygame.Rect(235, 520, 500, 50)

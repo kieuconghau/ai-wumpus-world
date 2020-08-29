@@ -13,8 +13,6 @@ class Agent(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
         self.spacing = 70
-
-
         self.i = x - 1
         self.j = y - 1
 
