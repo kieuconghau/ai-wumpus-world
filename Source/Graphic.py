@@ -160,7 +160,7 @@ class Graphic:
                 self.running_draw()
 
                 for action in action_list:
-                    # pygame.time.delay(50)
+                    # pygame.time.delay(500)
                     self.display_action(action)
                     print(action)
 
@@ -234,6 +234,7 @@ class Graphic:
             i, j = self.agent.get_pos()
             self.arrow.shoot(self.direct, self.screen, i, j)
             pygame.display.update()
+            pygame.time.delay(1000)
         elif action == Algorithms.Action.KILL_WUMPUS:
             #
             pass
