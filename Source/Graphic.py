@@ -13,7 +13,7 @@ class Graphic:
         self.map = Map()
         self.arrow = Arrow()
         #self.wumpus = Wumpus(1, 1)
-        self.pit = Pit(1, 1)
+        #self.pit = Pit(1, 1)
         self.gold = Gold()
         self.agent = Agent(1, 1)
         self.agent.load_image()
@@ -24,6 +24,9 @@ class Graphic:
         self.state = MAP
         self.map_i = 1
         self.mouse = None
+        self.bg = pygame.image.load('../Assets/Images/win.jpg').convert()
+        self.bg = pygame.transform.scale(self.bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.direct = 3
 
     def running_draw(self):
         self.screen.fill(WHITE)
@@ -96,6 +99,10 @@ class Graphic:
                 self.draw_button(self.screen, EXIT_POS, LIGHT_GREY, BLACK, "EXIT")
             pygame.display.update()
 
+    def win_draw(self):
+        self.screen.fill(WHITE)
+        self.screen.blit(self.bg, (0, 0))
+
     def run(self):
         while True:
             if self.state == MAP:
@@ -108,6 +115,7 @@ class Graphic:
                 action_list = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
 
                 for action in action_list:
+                    pygame.time.delay(50)
                     self.display_action(action)
 
                     for event in pygame.event.get():
@@ -117,45 +125,45 @@ class Graphic:
                     pygame.time.delay(100)
 
                 self.state = MAP
+            elif self.state == WIN:
+                self.win_draw()
 
             self.clock.tick(60)
 
 
     def display_action(self, action: Algorithms.Action):
         if action == Algorithms.Action.TURN_LEFT:
-            self.agent.move_left()
-            i, j = self.agent.get_pos()
-            self.map.discover_cell_i_j(i, j)
+            self.direct = self.agent.turn_left()
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
             pygame.display.update()
         elif action == Algorithms.Action.TURN_RIGHT:
-            self.agent.move_right()
-            i, j = self.agent.get_pos()
-            self.map.discover_cell_i_j(i, j)
+            self.direct = self.agent.turn_right()
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
             pygame.display.update()
         elif action == Algorithms.Action.TURN_UP:
-            self.agent.move_up()
-            i, j = self.agent.get_pos()
-            self.map.discover_cell_i_j(i, j)
+            self.direct = self.agent.turn_up()
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
             pygame.display.update()
         elif action == Algorithms.Action.TURN_DOWN:
-            self.agent.move_down()
+            self.direct = self.agent.turn_down()
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            pygame.display.update()
+        elif action == Algorithms.Action.MOVE_FORWARD:
+            self.agent.move_forward(self.direct)
             i, j = self.agent.get_pos()
             self.map.discover_cell_i_j(i, j)
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
             pygame.display.update()
-        elif action == Algorithms.Action.MOVE_FORWARD:
-            pass
         elif action == Algorithms.Action.GRAB_GOLD:
             pass
         elif action == Algorithms.Action.PERCEIVE_BREEZE:
@@ -163,7 +171,9 @@ class Graphic:
         elif action == Algorithms.Action.PERCEIVE_STENCH:
             pass
         elif action == Algorithms.Action.SHOOT:
-            pass
+            i, j = self.agent.get_pos()
+            self.arrow.shoot(self.direct, self.screen, i, j)
+            pygame.display.update()
         elif action == Algorithms.Action.KILL_WUMPUS:
             pass
         elif action == Algorithms.Action.KILL_NO_WUMPUS:
