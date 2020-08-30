@@ -131,12 +131,10 @@ class Graphic:
                     pygame.time.delay(50)
                     self.display_action(action)
                     print(action)
-
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             pygame.quit()
                             sys.exit()
-                    pygame.time.delay(1000)
 
                 self.state = MAP
             elif self.state == WIN:
@@ -179,12 +177,22 @@ class Graphic:
             self.all_sprites.draw(self.screen)
             pygame.display.update()
         elif action == Algorithms.Action.GRAB_GOLD:
-            pass
+            self.agent.grab_gold()
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            self.gold.grab_gold(self.screen, self.font)
+            pygame.display.update()
+            pygame.time.delay(1000)
         elif action == Algorithms.Action.PERCEIVE_BREEZE:
             pass
         elif action == Algorithms.Action.PERCEIVE_STENCH:
             pass
         elif action == Algorithms.Action.SHOOT:
+            self.agent.shoot()
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
             i, j = self.agent.get_pos()
             self.arrow.shoot(self.direct, self.screen, i, j)
             pygame.display.update()
@@ -193,13 +201,27 @@ class Graphic:
         elif action == Algorithms.Action.KILL_NO_WUMPUS:
             pass
         elif action == Algorithms.Action.BE_EATEN_BY_WUMPUS:
-            pass
+            self.agent.wumpus_or_pit_collision()
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            pygame.display.update()
         elif action == Algorithms.Action.FALL_INTO_PIT:
-            pass
+            self.agent.wumpus_or_pit_collision()
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            pygame.display.update()
         elif action == Algorithms.Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD:
             pass
         elif action == Algorithms.Action.CLIMB_OUT_OF_THE_CAVE:
-            pass
+            self.agent.climb()
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            self.map.agent_climb(self.screen, self.font)
+            pygame.display.update()
+            pygame.time.delay(1000)
         elif action == Algorithms.Action.DECTECT_PIT:
             pass
         elif action == Algorithms.Action.DETECT_WUMPUS:

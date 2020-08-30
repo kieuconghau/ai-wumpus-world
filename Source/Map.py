@@ -28,3 +28,15 @@ class Map:
 
     def discover_cell_i_j(self, i, j):
         self.is_discover[i][j] = True
+
+    def discovered(self):
+        return self.is_discover
+
+    def agent_climb(self, screen, font):
+        text = font.render('Climbed out!!!', True, BLACK)
+        textRect = text.get_rect()
+        textRect.center = (830, 100)
+        screen.blit(text, textRect)
+        text = font.render('Score + 10', True, BLACK)
+        textRect.center = (850, 150)
+        screen.blit(text, textRect)
