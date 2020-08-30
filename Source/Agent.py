@@ -62,6 +62,7 @@ class Agent(pygame.sprite.Sprite):
         self.score -= 10
         if self.j < 9:
             self.j += 1
+
     def turn_up(self):
         self.image = self.img_list[3]
         return 0

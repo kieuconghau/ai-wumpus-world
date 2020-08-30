@@ -4,17 +4,21 @@ class KnowledgeBase:
     def __init__(self):
         self.KB = []
 
+
     def exist(self, new_clause):
         return new_clause in self.KB
+
 
     @staticmethod
     def standardize_clause(clause):
         return sorted(list(set(clause)))
 
+
     def add_clause(self, clause):
         clause = self.standardize_clause(clause)
         if not self.exist(clause):
             self.KB.append(clause)
+
 
     @staticmethod
     def negative_clause(clause):
@@ -23,25 +27,15 @@ class KnowledgeBase:
             clause_list.append([-literal])
         return clause_list
 
-    def pl_resolution(self, alpha):
-        g = Glucose3()
-        negative_alpha = self.negative_clause(alpha)
-        for it in self.KB:
-            g.add_clause(it)
-        for it in negative_alpha:
-            g.add_clause(it)
-        if g.solve():
-            return False
-        return True
 
-
-    """
     @staticmethod
     def negative_literal(literal):
         return -literal
 
+
     def is_opposite(self, literal_1, literal_2):
         return literal_1 == self.negative_literal(literal_2)
+
 
     def resolve(self, clause_1, clause_2):
         temp_1 = []
@@ -60,6 +54,7 @@ class KnowledgeBase:
             temp_clause_2.remove(literal)
 
         return self.standardize_clause(temp_clause_1 + temp_clause_2)
+
 
     def pl_resolution(self, alpha):
         # clause_list = KB ^ not alpha
@@ -83,5 +78,16 @@ class KnowledgeBase:
                         clause_list.append(resolvents)
             if len(clause_list) == pre_clause_list_len:
                 return False
-            pre_pre_clause_list_len = pre_clause_list_lenS
-    """
+            pre_pre_clause_list_len = pre_clause_list_len
+
+
+    def infer(self, alpha):
+        g = Glucose3()
+        negative_alpha = self.negative_clause(alpha)
+        for it in self.KB:
+            g.add_clause(it)
+        for it in negative_alpha:
+            g.add_clause(it)
+        if g.solve():
+            return False
+        return True
