@@ -23,6 +23,10 @@ class Action(Enum):
     DETECT_WUMPUS = 17
     DETECT_NO_PIT = 18
     DETECT_NO_WUMPUS = 19
+    INFER_PIT = 20
+    INFER_NOT_PIT = 21
+    INFER_WUMPUS = 22
+    INFER_NOT_WUMPUS = 23
 
 
 class AgentBrain:
@@ -128,6 +132,14 @@ class AgentBrain:
             pass
         elif action == Action.DETECT_NO_WUMPUS:
             pass
+        elif action == Action.INFER_PIT:
+            pass
+        elif action == Action.INFER_NOT_PIT:
+            pass
+        elif action == Action.INFER_WUMPUS:
+            pass
+        elif action == Action.INFER_NOT_WUMPUS:
+            pass
         else:
             raise TypeError("Error: " + self.add_action.__name__)
 
@@ -215,18 +227,23 @@ class AgentBrain:
                 self.KB.add_clause(clause)
 
 
-    def move_to(self, next_cell):
+    def turn_to(self, next_cell):
         if next_cell.map_pos[0] == self.agent_cell.map_pos[0]:
             if next_cell.map_pos[1] - self.agent_cell.map_pos[1] == 1:
                 self.add_action(Action.TURN_UP)
             else:
                 self.add_action(Action.TURN_DOWN)
-        else:
+        elif next_cell.map_pos[1] == self.agent_cell.map_pos[1]:
             if next_cell.map_pos[0] - self.agent_cell.map_pos[0] == 1:
                 self.add_action(Action.TURN_RIGHT)
             else:
                 self.add_action(Action.TURN_LEFT)
+        else:
+            raise TypeError('Error: ' + self.turn_to.__name__)
 
+
+    def move_to(self, next_cell):
+        self.turn_to(next_cell)
         self.add_action(Action.MOVE_FORWARD)
         self.agent_cell = next_cell
 
@@ -293,8 +310,10 @@ class AgentBrain:
                 for valid_adj_cell in valid_adj_cell_list:
                     print("Infer: ", end='')
                     print(valid_adj_cell.map_pos)
+                    self.turn_to(valid_adj_cell)
 
                     # Infer Pit.
+                    self.add_action(Action.INFER_PIT)
                     alpha = [valid_adj_cell.get_literal(Cell.Object.PIT, '+')]
                     have_pit = self.KB.infer(alpha)
 
@@ -318,6 +337,7 @@ class AgentBrain:
                     # If we can not infer Pit.
                     else:
                         # Infer not Pit.
+                        self.add_action(Action.INFER_NOT_PIT)
                         alpha = [valid_adj_cell.get_literal(Cell.Object.PIT, '-')]
                         have_no_pit = self.KB.infer(alpha)
 
@@ -337,8 +357,10 @@ class AgentBrain:
                 for valid_adj_cell in valid_adj_cell_list:
                     print("Infer: ", end='')
                     print(valid_adj_cell.map_pos)
+                    self.turn_to(valid_adj_cell)
 
                     # Infer Wumpus.
+                    self.add_action(Action.INFER_WUMPUS)
                     alpha = [valid_adj_cell.get_literal(Cell.Object.WUMPUS, '+')]
                     have_wumpus = self.KB.infer(alpha)
 
@@ -355,6 +377,7 @@ class AgentBrain:
                     # If we can not infer Wumpus.
                     else:
                         # Infer not Wumpus.
+                        self.add_action(Action.INFER_NOT_WUMPUS)
                         alpha = [valid_adj_cell.get_literal(Cell.Object.WUMPUS, '-')]
                         have_no_wumpus = self.KB.infer(alpha)
 
@@ -421,15 +444,16 @@ class AgentBrain:
                     for valid_adj_cell in temp_valid_adj_cell_list:
                         print("Try: ", end='')
                         print(valid_adj_cell.map_pos)
+                        self.turn_to(valid_adj_cell)
 
                         self.add_action(Action.SHOOT)
                         if valid_adj_cell.exist_wumpus():
+                            self.add_action(Action.KILL_WUMPUS)
                             valid_adj_cell.kill_wumpus(self.cell_matrix)
 
                         # If the Stench disappears, the Agent knows that it has killed the Wumpus,
                         # then we add all of valid directions to child_list (all of valid directions are safe).
                         if not self.agent_cell.exist_stench():
-                            self.add_action(Action.KILL_WUMPUS)
                             self.agent_cell.update_child_list(temp_valid_adj_cell_list)
                             break
 
@@ -441,15 +465,16 @@ class AgentBrain:
                     for valid_adj_cell in temp_valid_adj_cell_list:
                         print("Try: ", end='')
                         print(valid_adj_cell.map_pos)
+                        self.turn_to(valid_adj_cell)
 
                         self.add_action(Action.SHOOT)
                         if valid_adj_cell.exist_wumpus():
+                            self.add_action(Action.KILL_WUMPUS)
                             valid_adj_cell.kill_wumpus(self.cell_matrix)
 
                         # If the Stench disappears, the Agent knows that it has killed the Wumpus,
                         # then we add this direction to child_list.
                         if not self.agent_cell.exist_stench():
-                            self.add_action(Action.KILL_WUMPUS)
                             self.agent_cell.update_child_list([valid_adj_cell])
                             break
 
@@ -474,4 +499,4 @@ class AgentBrain:
         if self.agent_cell.parent == self.cave_cell:
             self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
 
-        return self.action_list
+        return self.action_list, self.cave_cell
