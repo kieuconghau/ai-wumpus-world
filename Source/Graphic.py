@@ -19,9 +19,10 @@ class Graphic:
         self.agent.load_image()
         self.font = pygame.font.Font(FONT_MRSMONSTER, 30)
         self.noti = pygame.font.Font(FONT_MRSMONSTER, 15)
+        self.victory = pygame.font.Font(FONT_MRSMONSTER, 50)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.agent)
-        self.state = MAP
+        self.state = WIN
         self.map_i = 1
         self.mouse = None
         self.bg = pygame.image.load('../Assets/Images/win.jpg').convert()
@@ -102,7 +103,17 @@ class Graphic:
     def win_draw(self):
         self.screen.fill(WHITE)
         self.screen.blit(self.bg, (0, 0))
+        text = self.victory.render('VICTORY!!!', True, BLACK)
+        textRect = text.get_rect()
+        textRect.center = (500, 50)
+        self.screen.blit(text, textRect)
 
+    def win_event(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        pygame.display.update()
     def run(self):
         while True:
             if self.state == MAP:
@@ -127,7 +138,7 @@ class Graphic:
                 self.state = MAP
             elif self.state == WIN:
                 self.win_draw()
-
+                self.win_event()
             self.clock.tick(60)
 
 
