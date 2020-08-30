@@ -111,3 +111,4 @@ class Agent(pygame.sprite.Sprite):
 
     def climb(self):
         self.score += 10
+

@@ -41,14 +41,22 @@ class Pit:
 class Wumpus:
     def __init__(self, is_discovered, x, y):
         self.image = pygame.image.load(IMG_WUMPUS).convert()
+        self.image = pygame.transform.scale(self.image, (150, 300))
         self.size = 10
+        self.pos = (835, 100)
         self.is_discovered = is_discovered
-        self.smell_sound = pygame.mixer.Sound('Sniff.wav')
         self.noti = [[False for i in range(self.size)] for j in range(self.size)]
         self.wumpus_pos = [[False for i in range(self.size)] for j in range(self.size)]
         for i in range(len(x)):
             self.wumpus_pos[x[i]][y[i]] = True
 
+    def wumpus_kill(self, screen, font):
+        text = font.render('You killed a wumpus!!!', True, BLACK)
+        textRect = text.get_rect()
+        textRect.center = self.pos
+        screen.blit(text, textRect)
+        screen.blit(self.image, (750, 200))
+        pygame.display.update()
 
     def wumpus_notification(self):
         for i in range(self.size):
