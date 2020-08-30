@@ -10,18 +10,17 @@ class Graphic:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.caption = pygame.display.set_caption(CAPTION)
         self.clock = pygame.time.Clock()
-        self.map = Map()
-        self.arrow = Arrow()
-        #self.wumpus = Wumpus(1, 1)
-        #self.pit = Pit(1, 1)
-        self.gold = Gold()
-        self.agent = Agent(1, 1)
-        self.agent.load_image()
+        self.map = None
+        self.agent = None
+        self.gold = None
+        self.wumpus = None
+        self.pit = None
+        self.arrow = None
         self.font = pygame.font.Font(FONT_MRSMONSTER, 30)
         self.noti = pygame.font.Font(FONT_MRSMONSTER, 15)
         self.victory = pygame.font.Font(FONT_MRSMONSTER, 50)
         self.all_sprites = pygame.sprite.Group()
-        self.all_sprites.add(self.agent)
+
         self.state = MAP
         self.map_i = 1
         self.mouse = None
@@ -122,13 +121,39 @@ class Graphic:
                 self.home_event()
 
             elif self.state == RUNNING:
+                action_list, cave_cell, cell_matrix = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
+                map_pos = cave_cell.map_pos  # Theo tọa độ của thầy.
+
+                self.map = Map((len(cell_matrix) - map_pos[1] + 1, map_pos[0]))
+                self.arrow = Arrow()
+                self.gold = Gold()
+                self.agent = Agent(len(cell_matrix) - map_pos[1] + 1, map_pos[0])
+                self.agent.load_image()
+                self.all_sprites = pygame.sprite.Group()
+                self.all_sprites.add(self.agent)
+
+                x = []
+                y = []
+                for ir in range(len(cell_matrix)):
+                    for ic in range(len(cell_matrix)):
+                        if cell_matrix[ir][ic].exist_pit():
+                            x.append(ir)
+                            y.append(ic)
+                self.pit = Pit(x, y)
+
+                x = []
+                y = []
+                for ir in range(len(cell_matrix)):
+                    for ic in range(len(cell_matrix)):
+                        if cell_matrix[ir][ic].exist_wumpus():
+                            x.append(ir)
+                            y.append(ic)
+                self.wumpus = Wumpus(x, y)
+
                 self.running_draw()
 
-                action_list, cave_cell = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
-                map_pos = cave_cell.map_pos     # Theo tọa độ của thầy.
-
                 for action in action_list:
-                    pygame.time.delay(50)
+                    #pygame.time.delay(50)
                     self.display_action(action)
                     print(action)
                     for event in pygame.event.get():

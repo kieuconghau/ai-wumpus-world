@@ -1,4 +1,5 @@
 from enum import Enum
+import copy
 import Cell
 import KnowledgeBase
 
@@ -33,9 +34,11 @@ class AgentBrain:
     def __init__(self, map_filename):
         self.map_size = None
         self.cell_matrix = None
+        self.init_cell_matrix = None
 
         self.cave_cell = Cell.Cell((-1, -1), 10, Cell.Object.EMPTY.value)
         self.agent_cell = None
+        self.init_agent_cell = None
         self.KB = KnowledgeBase.KnowledgeBase()
         self.path = []
         self.action_list = []
@@ -57,8 +60,10 @@ class AgentBrain:
                 if Cell.Object.AGENT.value in raw_map[ir][ic]:
                     self.agent_cell = self.cell_matrix[ir][ic]
                     self.agent_cell.update_parent(self.cave_cell)
+                    self.init_agent_cell = copy.deepcopy(self.agent_cell)
 
         file.close()
+        self.init_cell_matrix = self.cell_matrix.copy()
 
         result, pos = self.is_valid_map()
         if not result:
@@ -499,4 +504,4 @@ class AgentBrain:
         if self.agent_cell.parent == self.cave_cell:
             self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
 
-        return self.action_list, self.cave_cell
+        return self.action_list, self.init_agent_cell, self.init_cell_matrix

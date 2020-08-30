@@ -8,8 +8,8 @@ class Agent(pygame.sprite.Sprite):
         self.score = 0
         self.image = pygame.image.load(IMG_HUNTER_RIGHT).convert()
         self.img_list = []
-        self.x = 40 + (x-1) * 70
-        self.y = 40 + (y-1) * 70
+        self.y = 40 + (x-1) * 70
+        self.x = 40 + (y-1) * 70
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
         self.spacing = 70

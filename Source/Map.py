@@ -2,14 +2,14 @@ import pygame
 from Specification import *
 
 class Map:
-    def __init__(self):
+    def __init__(self, init_agent_pos):
         self.space = 10
         self.size = 10
         self.cell_size = 60
         self.cell = pygame.image.load(IMG_INITIAL_CELL).convert()
         self.discover_cell = pygame.image.load(IMG_DISCOVERED_CELL).convert()
         self.is_discover = [[False for i in range(self.size)] for j in range(self.size)]
-        self.is_discover[0][0] = True
+        self.is_discover[init_agent_pos[0] - 1][init_agent_pos[1] - 1] = True
 
     def draw(self, screen):
         x = self.space
