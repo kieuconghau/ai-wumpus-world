@@ -69,8 +69,7 @@ class Cell:
 
 
     def grab_gold(self):
-        if self.percept[0]:
-            self.percept[0] = False
+        self.percept[0] = False
 
 
     def kill_wumpus(self, cell_matrix):

@@ -133,7 +133,7 @@ class Graphic:
                         if event.type == pygame.QUIT:
                             pygame.quit()
                             sys.exit()
-                    pygame.time.delay(100)
+                    pygame.time.delay(10)
 
                 self.state = MAP
             elif self.state == WIN:
