@@ -22,7 +22,7 @@ class Graphic:
         self.victory = pygame.font.Font(FONT_MRSMONSTER, 50)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.agent)
-        self.state = WIN
+        self.state = MAP
         self.map_i = 1
         self.mouse = None
         self.bg = pygame.image.load('../Assets/Images/win.jpg').convert()
@@ -114,6 +114,7 @@ class Graphic:
                 pygame.quit()
                 sys.exit()
         pygame.display.update()
+
     def run(self):
         while True:
             if self.state == MAP:
@@ -123,17 +124,19 @@ class Graphic:
             elif self.state == RUNNING:
                 self.running_draw()
 
-                action_list = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
+                action_list, cave_cell = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
+                map_pos = cave_cell.map_pos     # Theo tọa độ của thầy.
 
                 for action in action_list:
                     pygame.time.delay(50)
                     self.display_action(action)
+                    print(action)
 
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             pygame.quit()
                             sys.exit()
-                    pygame.time.delay(10)
+                    pygame.time.delay(1000)
 
                 self.state = MAP
             elif self.state == WIN:
@@ -204,6 +207,14 @@ class Graphic:
         elif action == Algorithms.Action.DETECT_NO_PIT:
             pass
         elif action == Algorithms.Action.DETECT_NO_WUMPUS:
+            pass
+        elif action == Algorithms.Action.INFER_PIT:
+            pass
+        elif action == Algorithms.Action.INFER_NOT_PIT:
+            pass
+        elif action == Algorithms.Action.INFER_WUMPUS:
+            pass
+        elif action == Algorithms.Action.INFER_NOT_WUMPUS:
             pass
         else:
             raise TypeError("Error: " + self.display_action.__name__)
