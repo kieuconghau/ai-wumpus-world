@@ -5,7 +5,6 @@ class Pit:
     def __init__(self, x, y):
         self.image = pygame.image.load(IMG_PIT).convert()
         self.is_discovered = None
-        self.wind_sound = pygame.mixer.Sound('wind.wav')
         self.size = 10
         self.noti = [[False for i in range(self.size)] for j in range(self.size)]
         self.pit_pos = [[False for i in range(self.size)] for j in range(self.size)]
@@ -28,20 +27,20 @@ class Pit:
                     if j < self.size - 1:
                         self.noti[i][j + 1] = True
 
-    def update(self, screen, font):
+    def update(self, screen, font, is_discovered):
         for i in range(self.size):
             for j in range (self.size):
-                if self.noti[i][j] and self.is_discovered[i][j]:
+                if self.noti[i][j] and is_discovered[i][j]:
                     text = font.render('Breeze', True, BLACK)
                     textRect = text.get_rect()
-                    textRect.center = (40 + i * 70, 45 + j * 70)
+                    textRect.center = (42 + j * 70, 40 + i * 70)
                     screen.blit(text, textRect)
                     pygame.display.update()
 
 class Wumpus:
     def __init__(self, x, y):
         self.image = pygame.image.load(IMG_WUMPUS).convert()
-        self.image = pygame.transform.scale(self.image, (150, 300))
+        self.image = pygame.transform.scale(self.image, (100, 200))
         self.size = 10
         self.pos = (835, 100)
         self.is_discovered = None
@@ -51,11 +50,11 @@ class Wumpus:
             self.wumpus_pos[x[i]][y[i]] = True
 
     def wumpus_kill(self, screen, font):
-        text = font.render('You killed a wumpus!!!', True, BLACK)
+        text = font.render('Killed a wumpus!!!', True, BLACK)
         textRect = text.get_rect()
         textRect.center = self.pos
         screen.blit(text, textRect)
-        screen.blit(self.image, (750, 200))
+        screen.blit(self.image, (800, 200))
         pygame.display.update()
 
     def wumpus_notification(self):
@@ -82,14 +81,15 @@ class Wumpus:
         if j < self.size - 1:
             self.noti[i][j + 1] = False
 
-    def update(self, screen, font):
+    def update(self, screen, font, is_discovered):
         for i in range(self.size):
             for j in range (self.size):
-                if self.noti[i][j] and self.is_discovered[i][j]:
+                if self.noti[i][j] and is_discovered[i][j]:
                     text = font.render('Stench', True, BLACK)
                     textRect = text.get_rect()
-                    textRect.center = (40 + i * 70, 25 + j * 70)
+                    textRect.center = (45 + j * 70, 30 + i * 70)
                     screen.blit(text, textRect)
+                    print('asdasdadasd')
                     pygame.display.update()
 
 

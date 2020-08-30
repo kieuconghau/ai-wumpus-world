@@ -147,6 +147,7 @@ class Graphic:
                             x.append(ir)
                             y.append(ic)
                 self.pit = Pit(x, y)
+                self.pit.pit_notification()
 
                 x = []
                 y = []
@@ -156,11 +157,12 @@ class Graphic:
                             x.append(ir)
                             y.append(ic)
                 self.wumpus = Wumpus(x, y)
+                self.wumpus.wumpus_notification()
 
                 self.running_draw()
 
                 for action in action_list:
-                    # pygame.time.delay(500)
+                    pygame.time.delay(100)
                     self.display_action(action)
                     print(action)
 
@@ -185,24 +187,36 @@ class Graphic:
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
+            temp = self.map.discovered()
+            self.wumpus.update(self.screen, self.noti, temp)
+            self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
         elif action == Algorithms.Action.TURN_RIGHT:
             self.direct = self.agent.turn_right()
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
+            temp = self.map.discovered()
+            self.wumpus.update(self.screen, self.noti, temp)
+            self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
         elif action == Algorithms.Action.TURN_UP:
             self.direct = self.agent.turn_up()
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
+            temp = self.map.discovered()
+            self.wumpus.update(self.screen, self.noti, temp)
+            self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
         elif action == Algorithms.Action.TURN_DOWN:
             self.direct = self.agent.turn_down()
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
+            temp = self.map.discovered()
+            self.wumpus.update(self.screen, self.noti, temp)
+            self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
         elif action == Algorithms.Action.MOVE_FORWARD:
             self.agent.move_forward(self.direct)
@@ -211,6 +225,9 @@ class Graphic:
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
+            temp = self.map.discovered()
+            self.wumpus.update(self.screen, self.noti, temp)
+            self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
         elif action == Algorithms.Action.GRAB_GOLD:
             self.agent.grab_gold()
@@ -218,10 +235,14 @@ class Graphic:
             self.running_draw()
             self.all_sprites.draw(self.screen)
             self.gold.grab_gold(self.screen, self.font)
+            temp = self.map.discovered()
+            self.wumpus.update(self.screen, self.noti, temp)
+            self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
             pygame.time.delay(1000)
         elif action == Algorithms.Action.PERCEIVE_BREEZE:
             #
+
             pass
         elif action == Algorithms.Action.PERCEIVE_STENCH:
             #
@@ -233,10 +254,29 @@ class Graphic:
             self.all_sprites.draw(self.screen)
             i, j = self.agent.get_pos()
             self.arrow.shoot(self.direct, self.screen, i, j)
+            temp = self.map.discovered()
+            self.wumpus.update(self.screen, self.noti, temp)
+            self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
             pygame.time.delay(1000)
         elif action == Algorithms.Action.KILL_WUMPUS:
-            #
+            self.wumpus.wumpus_kill(self.screen, self.font)
+            i, j = self.agent.get_pos()
+            if self.direct == 0:
+                i -= 1
+            elif self.direct == 1:
+                i += 1
+            elif self.direct == 2:
+                j -= 1
+            elif self.direct == 3:
+                j += 1
+            self.wumpus.wumpus_killed(i, j)
+            self.wumpus.wumpus_notification()
+            temp = self.map.discovered()
+            self.wumpus.update(self.screen, self.noti, temp)
+            self.pit.update(self.screen, self.noti, temp)
+            pygame.display.update()
+            pygame.time.delay(500)
             pass
         elif action == Algorithms.Action.KILL_NO_WUMPUS:
             pass
