@@ -88,19 +88,19 @@ class Wumpus:
 class Gold:
     def __init__(self):
         self.image = pygame.image.load(IMG_GOLD).convert()
-        self.pos = (840, 150)
-        self.is_discovered = False
+        self.image = pygame.transform.scale(self.image, (150,300))
+        self.pos = (835, 100)
 
-    def draw(self, screen):
-        screen.blit(self.image, self.pos)
-
-    def gold_discovered(self):
-        self.is_discovered = True
-
-    def update(self, screen):
-        if self.is_discovered:
-            self.draw(screen)
-            pygame.display.update()
+    def grab_gold(self, screen, font):
+        text = font.render('You found a gold!!!', True, BLACK)
+        textRect = text.get_rect()
+        textRect.center = self.pos
+        screen.blit(text, textRect)
+        screen.blit(self.image, (750, 200))
+        text = font.render('Score + 100', True, BLACK)
+        textRect.center = (900, 600)
+        screen.blit(text, textRect)
+        pygame.display.update()
 
 
 class Arrow:

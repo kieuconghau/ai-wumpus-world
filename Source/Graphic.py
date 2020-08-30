@@ -22,7 +22,7 @@ class Graphic:
         self.victory = pygame.font.Font(FONT_MRSMONSTER, 50)
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.agent)
-        self.state = WIN
+        self.state = MAP
         self.map_i = 1
         self.mouse = None
         self.bg = pygame.image.load('../Assets/Images/win.jpg').convert()
@@ -126,9 +126,9 @@ class Graphic:
                 action_list = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
 
                 for action in action_list:
-                    pygame.time.delay(50)
-                    self.display_action(action)
 
+                    self.display_action(action)
+                    pygame.time.delay(100)
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             pygame.quit()
@@ -176,7 +176,13 @@ class Graphic:
             self.all_sprites.draw(self.screen)
             pygame.display.update()
         elif action == Algorithms.Action.GRAB_GOLD:
-            pass
+            self.agent.grab_gold()
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
+            self.gold.grab_gold(self.screen, self.font)
+            pygame.display.update()
+            pygame.time.delay(1000)
         elif action == Algorithms.Action.PERCEIVE_BREEZE:
             pass
         elif action == Algorithms.Action.PERCEIVE_STENCH:
