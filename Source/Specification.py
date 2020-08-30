@@ -46,6 +46,7 @@ RED = (255, 0, 0)
 RUNNING = 'running'
 GAMEOVER = 'gameover'
 WIN = 'win'
+TRYBEST = 'trybest'
 MAP = 'map'
 
 LEVEL_1_POS = pygame.Rect(235, 120, 500, 50)

@@ -102,7 +102,12 @@ class Graphic:
     def win_draw(self):
         self.screen.fill(WHITE)
         self.screen.blit(self.bg, (0, 0))
-        text = self.victory.render('VICTORY!!!', True, BLACK)
+
+        if self.state == WIN:
+            text = self.victory.render('VICTORY!!!', True, BLACK)
+        elif self.state == TRYBEST:
+            text = self.victory.render('TRY BEST!!!', True, BLACK)
+
         textRect = text.get_rect()
         textRect.center = (500, 50)
         self.screen.blit(text, textRect)
@@ -121,6 +126,8 @@ class Graphic:
                 self.home_event()
 
             elif self.state == RUNNING:
+                self.state = TRYBEST
+
                 action_list, cave_cell, cell_matrix = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
                 map_pos = cave_cell.map_pos  # Theo tọa độ của thầy.
 
@@ -153,18 +160,22 @@ class Graphic:
                 self.running_draw()
 
                 for action in action_list:
-                    #pygame.time.delay(50)
+                    # pygame.time.delay(50)
                     self.display_action(action)
                     print(action)
+
+                    if action == Algorithms.Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD:
+                        self.state = WIN
+
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             pygame.quit()
                             sys.exit()
 
-                self.state = MAP
-            elif self.state == WIN:
+            elif self.state == WIN or self.state == TRYBEST:
                 self.win_draw()
                 self.win_event()
+
             self.clock.tick(60)
 
 
@@ -210,8 +221,10 @@ class Graphic:
             pygame.display.update()
             pygame.time.delay(1000)
         elif action == Algorithms.Action.PERCEIVE_BREEZE:
+            #
             pass
         elif action == Algorithms.Action.PERCEIVE_STENCH:
+            #
             pass
         elif action == Algorithms.Action.SHOOT:
             self.agent.shoot()
@@ -222,6 +235,7 @@ class Graphic:
             self.arrow.shoot(self.direct, self.screen, i, j)
             pygame.display.update()
         elif action == Algorithms.Action.KILL_WUMPUS:
+            #
             pass
         elif action == Algorithms.Action.KILL_NO_WUMPUS:
             pass
@@ -231,13 +245,17 @@ class Graphic:
             self.running_draw()
             self.all_sprites.draw(self.screen)
             pygame.display.update()
+            self.state = GAMEOVER
         elif action == Algorithms.Action.FALL_INTO_PIT:
             self.agent.wumpus_or_pit_collision()
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
             pygame.display.update()
+            self.state = GAMEOVER
         elif action == Algorithms.Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD:
+            #
+            self.state = WIN
             pass
         elif action == Algorithms.Action.CLIMB_OUT_OF_THE_CAVE:
             self.agent.climb()
