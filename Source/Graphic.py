@@ -111,6 +111,10 @@ class Graphic:
         textRect = text.get_rect()
         textRect.center = (500, 50)
         self.screen.blit(text, textRect)
+        score = self.agent.get_score()
+        text = self.victory.render('Your score: ' + str(score), True, BLACK)
+        textRect.center = (450, 100)
+        self.screen.blit(text, textRect)
 
     def win_event(self):
         for event in pygame.event.get():
@@ -118,6 +122,8 @@ class Graphic:
                 pygame.quit()
                 sys.exit()
         pygame.display.update()
+        pygame.time.delay(200)
+        self.state = MAP
 
     def run(self):
         while True:
