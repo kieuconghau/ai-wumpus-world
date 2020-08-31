@@ -89,8 +89,10 @@ class Wumpus:
                     textRect = text.get_rect()
                     textRect.center = (45 + j * 70, 30 + i * 70)
                     screen.blit(text, textRect)
-                    print('asdasdadasd')
                     pygame.display.update()
+
+    def stench_i_j(self, i, j):
+        return self.noti[i][j]
 
 
 class Gold:

@@ -159,10 +159,12 @@ class Graphic:
                 self.wumpus = Wumpus(x, y)
                 self.wumpus.wumpus_notification()
 
+                print(cell_matrix)
+
                 self.running_draw()
 
                 for action in action_list:
-                    pygame.time.delay(100)
+                    #pygame.time.delay(100)
                     self.display_action(action)
                     print(action)
 
@@ -260,7 +262,7 @@ class Graphic:
             pygame.display.update()
             pygame.time.delay(1000)
         elif action == Algorithms.Action.KILL_WUMPUS:
-            self.wumpus.wumpus_kill(self.screen, self.font)
+
             i, j = self.agent.get_pos()
             if self.direct == 0:
                 i -= 1
@@ -272,6 +274,9 @@ class Graphic:
                 j += 1
             self.wumpus.wumpus_killed(i, j)
             self.wumpus.wumpus_notification()
+            i, j = self.agent.get_pos()
+            if not self.wumpus.stench_i_j(i, j):
+                self.wumpus.wumpus_kill(self.screen, self.font)
             temp = self.map.discovered()
             self.wumpus.update(self.screen, self.noti, temp)
             self.pit.update(self.screen, self.noti, temp)
