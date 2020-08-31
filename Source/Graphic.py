@@ -159,17 +159,19 @@ class Graphic:
                 self.wumpus = Wumpus(x, y)
                 self.wumpus.wumpus_notification()
 
-                print(cell_matrix)
-
                 self.running_draw()
 
                 for action in action_list:
-                    #pygame.time.delay(100)
+                    pygame.time.delay(10)
                     self.display_action(action)
-                    print(action)
+                    # print(action)
 
                     if action == Algorithms.Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD:
                         self.state = WIN
+
+                    if action == Algorithms.Action.FALL_INTO_PIT or action == Algorithms.Action.BE_EATEN_BY_WUMPUS:
+                        self.state = GAMEOVER
+                        break
 
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
@@ -322,6 +324,7 @@ class Graphic:
             self.all_sprites.update()
             self.running_draw()
             self.all_sprites.draw(self.screen)
+            pygame.time.delay(1000)
         elif action == Algorithms.Action.DETECT_WUMPUS:
             pass
         elif action == Algorithms.Action.DETECT_NO_PIT:
@@ -335,6 +338,10 @@ class Graphic:
         elif action == Algorithms.Action.INFER_WUMPUS:
             pass
         elif action == Algorithms.Action.INFER_NOT_WUMPUS:
+            pass
+        elif action == Algorithms.Action.DETECT_SAFE:
+            pass
+        elif action == Algorithms.Action.INFER_SAFE:
             pass
         else:
             raise TypeError("Error: " + self.display_action.__name__)
