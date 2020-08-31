@@ -81,5 +81,4 @@ class KnowledgeBase:
         sol = g.solve()
         if sol:
             return False
-        print(g.get_model())
         return True

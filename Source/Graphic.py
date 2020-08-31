@@ -135,7 +135,7 @@ class Graphic:
                 self.state = TRYBEST
 
                 action_list, cave_cell, cell_matrix = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1], OUTPUT_LIST[self.map_i - 1]).solve_wumpus_world()
-                map_pos = cave_cell.map_pos  # Theo tọa độ của thầy.
+                map_pos = cave_cell.map_pos
 
                 self.map = Map((len(cell_matrix) - map_pos[1] + 1, map_pos[0]))
                 self.arrow = Arrow()
@@ -168,7 +168,7 @@ class Graphic:
                 self.running_draw()
 
                 for action in action_list:
-                    pygame.time.delay(10)
+                    pygame.time.delay(SPEED)
                     self.display_action(action)
                     # print(action)
 
@@ -249,7 +249,7 @@ class Graphic:
             self.wumpus.update(self.screen, self.noti, temp)
             self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
-            pygame.time.delay(1000)
+            pygame.time.delay(500)
         elif action == Algorithms.Action.PERCEIVE_BREEZE:
             pass
         elif action == Algorithms.Action.PERCEIVE_STENCH:
@@ -265,7 +265,7 @@ class Graphic:
             self.wumpus.update(self.screen, self.noti, temp)
             self.pit.update(self.screen, self.noti, temp)
             pygame.display.update()
-            pygame.time.delay(1000)
+            pygame.time.delay(500)
         elif action == Algorithms.Action.KILL_WUMPUS:
 
             i, j = self.agent.get_pos()
@@ -315,7 +315,7 @@ class Graphic:
             self.all_sprites.draw(self.screen)
             self.map.agent_climb(self.screen, self.font)
             pygame.display.update()
-            pygame.time.delay(1000)
+            pygame.time.delay(2000)
         elif action == Algorithms.Action.DECTECT_PIT:
             i, j = self.agent.get_pos()
             if self.direct == 0:

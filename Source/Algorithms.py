@@ -253,6 +253,9 @@ class AgentBrain:
                 clause = [adj_cell.get_literal(Cell.Object.WUMPUS, '-')]
                 self.KB.add_clause(clause)
 
+        print(self.KB.KB)
+        self.append_event_to_output_file(str(self.KB.KB))
+
 
     def turn_to(self, next_cell):
         if next_cell.map_pos[0] == self.agent_cell.map_pos[0]:
@@ -351,6 +354,7 @@ class AgentBrain:
                         self.add_action(Action.SHOOT)
                         self.add_action(Action.KILL_WUMPUS)
                         valid_adj_cell.kill_wumpus(self.cell_matrix, self.KB)
+                        self.append_event_to_output_file('KB: ' + str(self.KB.KB))
 
                     # If we can not infer Wumpus.
                     else:
@@ -395,6 +399,7 @@ class AgentBrain:
                     if adj_cell.exist_wumpus():
                         self.add_action(Action.KILL_WUMPUS)
                         adj_cell.kill_wumpus(self.cell_matrix, self.KB)
+                        self.append_event_to_output_file('KB: ' + str(self.KB.KB))
 
                     if not self.agent_cell.exist_stench():
                         self.agent_cell.update_child_list([adj_cell])
