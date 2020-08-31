@@ -28,6 +28,8 @@ class Action(Enum):
     INFER_NOT_PIT = 21
     INFER_WUMPUS = 22
     INFER_NOT_WUMPUS = 23
+    DETECT_SAFE = 24
+    INFER_SAFE = 25
 
 
 class AgentBrain:
@@ -144,6 +146,10 @@ class AgentBrain:
         elif action == Action.INFER_WUMPUS:
             pass
         elif action == Action.INFER_NOT_WUMPUS:
+            pass
+        elif action == Action.DETECT_SAFE:
+            pass
+        elif action == Action.INFER_SAFE:
             pass
         else:
             raise TypeError("Error: " + self.add_action.__name__)
@@ -277,17 +283,13 @@ class AgentBrain:
         if self.agent_cell.exist_stench():
             self.add_action(Action.PERCEIVE_STENCH)
 
-        # Get all adjacent cells (Right, Left, Up, Down).
-        adj_cell_list = self.agent_cell.get_adj_cell_list(self.cell_matrix)
-
         # If this cell is not explored, mark this cell as explored then add new percepts to the KB.
         if not self.agent_cell.is_explored():
             self.agent_cell.explore()
             self.add_new_percepts_to_KB(self.agent_cell)
 
-        # Initialize valid_adj_cell_list from adj_cell_list.
-        valid_adj_cell_list = copy.copy(adj_cell_list)
-        #valid_adj_cell_list = adj_cell_list.copy()
+        # Initialize valid_adj_cell_list.
+        valid_adj_cell_list = self.agent_cell.get_adj_cell_list(self.cell_matrix)
 
         # Discard the parent_cell from the valid_adj_cell_list.
         temp_adj_cell_list = []
@@ -310,6 +312,81 @@ class AgentBrain:
 
             temp_adj_cell_list = []
 
+            # If the current cell has Stench, Agent infers whether the valid adjacent cells have Wumpus.
+            if self.agent_cell.exist_stench():
+                valid_adj_cell: Cell.Cell
+                for valid_adj_cell in valid_adj_cell_list:
+                    print("Infer: ", end='')
+                    print(valid_adj_cell.map_pos)
+                    self.turn_to(valid_adj_cell)
+
+                    # Infer Wumpus.
+                    self.add_action(Action.INFER_WUMPUS)
+                    not_alpha = [[valid_adj_cell.get_literal(Cell.Object.WUMPUS, '-')]]
+                    have_wumpus = self.KB.infer(not_alpha)
+
+                    # If we can infer Wumpus.
+                    if have_wumpus:
+                        # Dectect Wumpus.
+                        self.add_action(Action.DETECT_WUMPUS)
+
+                        """
+                        # Shoot this Wumpus.
+                        self.add_action(Action.SHOOT)
+                        self.add_action(Action.KILL_WUMPUS)
+                        valid_adj_cell.kill_wumpus(self.cell_matrix, self.agent_cell)
+                        """
+                        if valid_adj_cell not in temp_adj_cell_list:
+                            temp_adj_cell_list.append(valid_adj_cell)
+
+                    # If we can not infer Wumpus.
+                    else:
+                        # Infer not Wumpus.
+                        self.add_action(Action.INFER_NOT_WUMPUS)
+                        not_alpha = [[valid_adj_cell.get_literal(Cell.Object.WUMPUS, '+')]]
+                        have_no_wumpus = self.KB.infer(not_alpha)
+
+                        # If we can infer not Wumpus.
+                        if have_no_wumpus:
+                            # Detect no Wumpus.
+                            self.add_action(Action.DETECT_NO_WUMPUS)
+
+                        # If we can not infer not Wumpus.
+                        else:
+                            # Discard these cells from the valid_adj_cell_list.
+                            if valid_adj_cell not in temp_adj_cell_list:
+                                temp_adj_cell_list.append(valid_adj_cell)
+
+            """
+            # If this cell still has Stench after trying to infer,
+            # the Agent will try to shoot all of valid directions till Stench disappear.
+            if self.agent_cell.exist_stench():
+                adj_cell_list = self.agent_cell.get_adj_cell_list(self.cell_matrix)
+                if self.agent_cell.parent not in adj_cell_list:
+                    adj_cell_list.remove(self.agent_cell.parent)
+
+                explored_cell_list = []
+                for adj_cell in adj_cell_list:
+                    if adj_cell.is_explored():
+                        explored_cell_list.append(adj_cell)
+                for explored_cell in explored_cell_list:
+                    adj_cell_list.remove(explored_cell)
+
+                for adj_cell in adj_cell_list:
+                    print("Try: ", end='')
+                    print(adj_cell.map_pos)
+                    self.turn_to(adj_cell)
+
+                    self.add_action(Action.SHOOT)
+                    if adj_cell.exist_wumpus():
+                        self.add_action(Action.KILL_WUMPUS)
+                        adj_cell.kill_wumpus(self.cell_matrix, self.agent_cell)
+
+                    if not self.agent_cell.exist_stench():
+                        self.agent_cell.update_child_list([adj_cell])
+                        break
+            """
+
             # If the current cell has Breeze, Agent infers whether the adjacent cells have Pit.
             if self.agent_cell.exist_breeze():
                 valid_adj_cell: Cell.Cell
@@ -320,8 +397,8 @@ class AgentBrain:
 
                     # Infer Pit.
                     self.add_action(Action.INFER_PIT)
-                    alpha = [valid_adj_cell.get_literal(Cell.Object.PIT, '+')]
-                    have_pit = self.KB.infer(alpha)
+                    not_alpha = [[valid_adj_cell.get_literal(Cell.Object.PIT, '-')]]
+                    have_pit = self.KB.infer(not_alpha)
 
                     # If we can infer Pit.
                     if have_pit:
@@ -344,8 +421,8 @@ class AgentBrain:
                     else:
                         # Infer not Pit.
                         self.add_action(Action.INFER_NOT_PIT)
-                        alpha = [valid_adj_cell.get_literal(Cell.Object.PIT, '-')]
-                        have_no_pit = self.KB.infer(alpha)
+                        not_alpha = [[valid_adj_cell.get_literal(Cell.Object.PIT, '+')]]
+                        have_no_pit = self.KB.infer(not_alpha)
 
                         # If we can infer not Pit.
                         if have_no_pit:
@@ -357,135 +434,25 @@ class AgentBrain:
                             # Discard these cells from the valid_adj_cell_list.
                             temp_adj_cell_list.append(valid_adj_cell)
 
-            # If the current cell has Stench, Agent infers whether the valid adjacent cells have Wumpus.
-            if self.agent_cell.exist_stench():
-                valid_adj_cell: Cell.Cell
-                for valid_adj_cell in valid_adj_cell_list:
-                    print("Infer: ", end='')
-                    print(valid_adj_cell.map_pos)
-                    self.turn_to(valid_adj_cell)
-
-                    # Infer Wumpus.
-                    self.add_action(Action.INFER_WUMPUS)
-                    alpha = [valid_adj_cell.get_literal(Cell.Object.WUMPUS, '+')]
-                    have_wumpus = self.KB.infer(alpha)
-
-                    # If we can infer Wumpus.
-                    if have_wumpus:
-                        # Dectect Wumpus.
-                        self.add_action(Action.DETECT_WUMPUS)
-
-                        # Shoot this Wumpus.
-                        self.add_action(Action.SHOOT)
-                        self.add_action(Action.KILL_WUMPUS)
-                        valid_adj_cell.kill_wumpus(self.cell_matrix)
-
-                    # If we can not infer Wumpus.
-                    else:
-                        # Infer not Wumpus.
-                        self.add_action(Action.INFER_NOT_WUMPUS)
-                        alpha = [valid_adj_cell.get_literal(Cell.Object.WUMPUS, '-')]
-                        have_no_wumpus = self.KB.infer(alpha)
-
-                        # If we can infer not Wumpus.
-                        if have_no_wumpus:
-                            # Detect no Wumpus.
-                            self.add_action(Action.DETECT_NO_WUMPUS)
-
-                        # If we can not infer not Wumpus.
-                        else:
-                            # Discard these cells from the valid_adj_cell_list.
-                            if valid_adj_cell not in temp_adj_cell_list:
-                                temp_adj_cell_list.append(valid_adj_cell)
+        temp_adj_cell_list = list(set(temp_adj_cell_list))
 
         # Select all of the valid nexts cell from the current cell.
         for adj_cell in temp_adj_cell_list:
             valid_adj_cell_list.remove(adj_cell)
         self.agent_cell.update_child_list(valid_adj_cell_list)
 
-        while True:
-            pre_kb_len = len(self.KB.KB)
+        # Move to all of the valid next cells sequentially.
+        for next_cell in self.agent_cell.child_list:
+            self.move_to(next_cell)
+            print("Move to: ", end='')
+            print(self.agent_cell.map_pos)
 
-            # Move to all of the valid next cells sequentially.
-            for next_cell in self.agent_cell.child_list:
-                self.move_to(next_cell)
-                print("Move to: ", end='')
-                print(self.agent_cell.map_pos)
+            if not self.backtracking_search():
+                return False
 
-                if not self.backtracking_search():
-                    return False
-
-                self.move_to(pre_agent_cell)
-                print("Backtrack: ", end='')
-                print(pre_agent_cell.map_pos)
-
-            # After some movings, if the KB is not changed anymore.
-            if pre_kb_len == len(self.KB.KB):
-                # If this cell has no Stench, let's backtrack.
-                if not self.agent_cell.exist_stench():
-                    break
-
-                # Else if (this cell has Stench), the Agent tries to shoot the Wumpus.
-                # Previous child_list's length.
-                pre_child_list_len = len(self.agent_cell.child_list)
-
-                # Valid adjacent cells list.
-                temp_valid_adj_cell_list = self.agent_cell.get_adj_cell_list(self.cell_matrix)
-
-                # Remove parent cell.
-                if self.agent_cell.parent in temp_valid_adj_cell_list:
-                    temp_valid_adj_cell_list.remove(self.agent_cell.parent)
-
-                # Remove all of explored adjacent cells.
-                temp_adj_cell_list = []
-                for adj_cell in temp_valid_adj_cell_list:
-                    if adj_cell.is_explored():
-                        temp_adj_cell_list.append(adj_cell)
-                for adj_cell in temp_adj_cell_list:
-                    temp_valid_adj_cell_list.remove(adj_cell)
-
-                # If the current cell has only Stench (no Breeze), the Agent tries to shoot all of directions till this cell has no Stench.
-                # Then, this cell becomes OK, the Agent can move to any valid directions.
-                if not self.agent_cell.exist_breeze():
-                    for valid_adj_cell in temp_valid_adj_cell_list:
-                        print("Try: ", end='')
-                        print(valid_adj_cell.map_pos)
-                        self.turn_to(valid_adj_cell)
-
-                        self.add_action(Action.SHOOT)
-                        if valid_adj_cell.exist_wumpus():
-                            self.add_action(Action.KILL_WUMPUS)
-                            valid_adj_cell.kill_wumpus(self.cell_matrix)
-
-                        # If the Stench disappears, the Agent knows that it has killed the Wumpus,
-                        # then we add all of valid directions to child_list (all of valid directions are safe).
-                        if not self.agent_cell.exist_stench():
-                            self.agent_cell.update_child_list(temp_valid_adj_cell_list)
-                            break
-
-                # If the current cell has both Stench and Breeze, the Agent tries to shoot all of directions till this cell has no Stench.
-                # But, the cell still has Breeze, so the Agent can not make sure which direction is safe.
-                # However, the last shooting which makes this current cell has no Stench is the safe direction,
-                # because Pit and Wumpus can not appear at the same cell.
-                else:
-                    for valid_adj_cell in temp_valid_adj_cell_list:
-                        print("Try: ", end='')
-                        print(valid_adj_cell.map_pos)
-                        self.turn_to(valid_adj_cell)
-
-                        self.add_action(Action.SHOOT)
-                        if valid_adj_cell.exist_wumpus():
-                            self.add_action(Action.KILL_WUMPUS)
-                            valid_adj_cell.kill_wumpus(self.cell_matrix)
-
-                        # If the Stench disappears, the Agent knows that it has killed the Wumpus,
-                        # then we add this direction to child_list.
-                        if not self.agent_cell.exist_stench():
-                            self.agent_cell.update_child_list([valid_adj_cell])
-                            break
-
-                if len(self.agent_cell.child_list) > pre_child_list_len:
-                    continue
+            self.move_to(pre_agent_cell)
+            print("Backtrack: ", end='')
+            print(pre_agent_cell.map_pos)
 
         return True
 

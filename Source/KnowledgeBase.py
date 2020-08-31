@@ -1,12 +1,9 @@
 from pysat.solvers import Glucose3
+import copy
 
 class KnowledgeBase:
     def __init__(self):
         self.KB = []
-
-
-    def exist(self, new_clause):
-        return new_clause in self.KB
 
 
     @staticmethod
@@ -16,25 +13,12 @@ class KnowledgeBase:
 
     def add_clause(self, clause):
         clause = self.standardize_clause(clause)
-        if not self.exist(clause):
+        if clause not in self.KB:
             self.KB.append(clause)
 
-
     @staticmethod
-    def negative_clause(clause):
-        clause_list = []
-        for literal in clause:
-            clause_list.append([-literal])
-        return clause_list
-
-
-    @staticmethod
-    def negative_literal(literal):
-        return -literal
-
-
-    def is_opposite(self, literal_1, literal_2):
-        return literal_1 == self.negative_literal(literal_2)
+    def is_opposite(literal_1, literal_2):
+        return literal_1 == -literal_2
 
 
     def resolve(self, clause_1, clause_2):
@@ -56,10 +40,10 @@ class KnowledgeBase:
         return self.standardize_clause(temp_clause_1 + temp_clause_2)
 
 
-    def pl_resolution(self, alpha):
+    def pl_resolution(self, not_alpha):
         # clause_list = KB ^ not alpha
-        clause_list = self.KB.copy()
-        negative_alpha = self.negative_clause(alpha)
+        clause_list = copy.deepcopy(self.KB)
+        negative_alpha = not_alpha
 
         for clause in negative_alpha:
             clause = self.standardize_clause(clause)
@@ -81,13 +65,16 @@ class KnowledgeBase:
             pre_pre_clause_list_len = pre_clause_list_len
 
 
-    def infer(self, alpha):
+    def infer(self, not_alpha):
         g = Glucose3()
-        negative_alpha = self.negative_clause(alpha)
-        for it in self.KB:
+        clause_list = copy.deepcopy(self.KB)
+        negative_alpha = not_alpha
+        for it in clause_list:
             g.add_clause(it)
         for it in negative_alpha:
             g.add_clause(it)
-        if g.solve():
+        sol = g.solve()
+        if sol:
             return False
+        print(g.get_model())
         return True
