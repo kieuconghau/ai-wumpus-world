@@ -330,14 +330,10 @@ class AgentBrain:
                         # Dectect Wumpus.
                         self.add_action(Action.DETECT_WUMPUS)
 
-                        """
                         # Shoot this Wumpus.
                         self.add_action(Action.SHOOT)
                         self.add_action(Action.KILL_WUMPUS)
-                        valid_adj_cell.kill_wumpus(self.cell_matrix, self.agent_cell)
-                        """
-                        if valid_adj_cell not in temp_adj_cell_list:
-                            temp_adj_cell_list.append(valid_adj_cell)
+                        valid_adj_cell.kill_wumpus(self.cell_matrix, self.KB)
 
                     # If we can not infer Wumpus.
                     else:
@@ -357,12 +353,12 @@ class AgentBrain:
                             if valid_adj_cell not in temp_adj_cell_list:
                                 temp_adj_cell_list.append(valid_adj_cell)
 
-            """
+
             # If this cell still has Stench after trying to infer,
             # the Agent will try to shoot all of valid directions till Stench disappear.
             if self.agent_cell.exist_stench():
                 adj_cell_list = self.agent_cell.get_adj_cell_list(self.cell_matrix)
-                if self.agent_cell.parent not in adj_cell_list:
+                if self.agent_cell.parent in adj_cell_list:
                     adj_cell_list.remove(self.agent_cell.parent)
 
                 explored_cell_list = []
@@ -380,12 +376,12 @@ class AgentBrain:
                     self.add_action(Action.SHOOT)
                     if adj_cell.exist_wumpus():
                         self.add_action(Action.KILL_WUMPUS)
-                        adj_cell.kill_wumpus(self.cell_matrix, self.agent_cell)
+                        adj_cell.kill_wumpus(self.cell_matrix, self.KB)
 
                     if not self.agent_cell.exist_stench():
                         self.agent_cell.update_child_list([adj_cell])
                         break
-            """
+
 
             # If the current cell has Breeze, Agent infers whether the adjacent cells have Pit.
             if self.agent_cell.exist_breeze():

@@ -16,6 +16,11 @@ class KnowledgeBase:
         if clause not in self.KB:
             self.KB.append(clause)
 
+    def del_clause(self, clause):
+        clause = self.standardize_clause(clause)
+        if clause in self.KB:
+            self.KB.remove(clause)
+
     @staticmethod
     def is_opposite(literal_1, literal_2):
         return literal_1 == -literal_2
