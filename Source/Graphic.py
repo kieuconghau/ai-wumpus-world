@@ -243,11 +243,8 @@ class Graphic:
             pygame.display.update()
             pygame.time.delay(1000)
         elif action == Algorithms.Action.PERCEIVE_BREEZE:
-            #
-
             pass
         elif action == Algorithms.Action.PERCEIVE_STENCH:
-            #
             pass
         elif action == Algorithms.Action.SHOOT:
             self.agent.shoot()
@@ -312,7 +309,19 @@ class Graphic:
             pygame.display.update()
             pygame.time.delay(1000)
         elif action == Algorithms.Action.DECTECT_PIT:
-            pass
+            i, j = self.agent.get_pos()
+            if self.direct == 0:
+                i -= 1
+            elif self.direct == 1:
+                i += 1
+            elif self.direct == 2:
+                j -= 1
+            elif self.direct == 3:
+                j += 1
+            self.map.pit_detect(i, j)
+            self.all_sprites.update()
+            self.running_draw()
+            self.all_sprites.draw(self.screen)
         elif action == Algorithms.Action.DETECT_WUMPUS:
             pass
         elif action == Algorithms.Action.DETECT_NO_PIT:
