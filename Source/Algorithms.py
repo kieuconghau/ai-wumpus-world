@@ -33,7 +33,9 @@ class Action(Enum):
 
 
 class AgentBrain:
-    def __init__(self, map_filename):
+    def __init__(self, map_filename, output_filename):
+        self.output_filename = output_filename
+
         self.map_size = None
         self.cell_matrix = None
         self.init_cell_matrix = None
@@ -67,6 +69,7 @@ class AgentBrain:
         file.close()
         self.init_cell_matrix = copy.deepcopy(self.cell_matrix)
 
+
         result, pos = self.is_valid_map()
         if not result:
             if pos is None:
@@ -91,9 +94,16 @@ class AgentBrain:
         return True, None
 
 
+    def append_event_to_output_file(self, text: str):
+        out_file = open(self.output_filename, 'a')
+        out_file.write(text + '\n')
+        out_file.close()
+
+
     def add_action(self, action):
         self.action_list.append(action)
         print(action)
+        self.append_event_to_output_file(action.name)
 
         if action == Action.TURN_LEFT:
             pass
@@ -106,9 +116,11 @@ class AgentBrain:
         elif action == Action.MOVE_FORWARD:
             self.score -= 10
             print('Score: ' + str(self.score))
+            self.append_event_to_output_file('Score: ' + str(self.score))
         elif action == Action.GRAB_GOLD:
             self.score += 100
             print('Score: ' + str(self.score))
+            self.append_event_to_output_file('Score: ' + str(self.score))
         elif action == Action.PERCEIVE_BREEZE:
             pass
         elif action == Action.PERCEIVE_STENCH:
@@ -116,6 +128,7 @@ class AgentBrain:
         elif action == Action.SHOOT:
             self.score -= 100
             print('Score: ' + str(self.score))
+            self.append_event_to_output_file('Score: ' + str(self.score))
         elif action == Action.KILL_WUMPUS:
             pass
         elif action == Action.KILL_NO_WUMPUS:
@@ -123,14 +136,17 @@ class AgentBrain:
         elif action == Action.BE_EATEN_BY_WUMPUS:
             self.score -= 10000
             print('Score: ' + str(self.score))
+            self.append_event_to_output_file('Score: ' + str(self.score))
         elif action == Action.FALL_INTO_PIT:
             self.score -= 10000
             print('Score: ' + str(self.score))
+            self.append_event_to_output_file('Score: ' + str(self.score))
         elif action == Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD:
             pass
         elif action == Action.CLIMB_OUT_OF_THE_CAVE:
             self.score += 10
             print('Score: ' + str(self.score))
+            self.append_event_to_output_file('Score: ' + str(self.score))
         elif action == Action.DECTECT_PIT:
             pass
         elif action == Action.DETECT_WUMPUS:
@@ -318,6 +334,7 @@ class AgentBrain:
                 for valid_adj_cell in valid_adj_cell_list:
                     print("Infer: ", end='')
                     print(valid_adj_cell.map_pos)
+                    self.append_event_to_output_file('Infer: ' + str(valid_adj_cell.map_pos))
                     self.turn_to(valid_adj_cell)
 
                     # Infer Wumpus.
@@ -371,6 +388,7 @@ class AgentBrain:
                 for adj_cell in adj_cell_list:
                     print("Try: ", end='')
                     print(adj_cell.map_pos)
+                    self.append_event_to_output_file('Try: ' + str(adj_cell.map_pos))
                     self.turn_to(adj_cell)
 
                     self.add_action(Action.SHOOT)
@@ -389,6 +407,7 @@ class AgentBrain:
                 for valid_adj_cell in valid_adj_cell_list:
                     print("Infer: ", end='')
                     print(valid_adj_cell.map_pos)
+                    self.append_event_to_output_file('Infer: ' + str(valid_adj_cell.map_pos))
                     self.turn_to(valid_adj_cell)
 
                     # Infer Pit.
@@ -442,6 +461,7 @@ class AgentBrain:
             self.move_to(next_cell)
             print("Move to: ", end='')
             print(self.agent_cell.map_pos)
+            self.append_event_to_output_file('Move to: ' + str(self.agent_cell.map_pos))
 
             if not self.backtracking_search():
                 return False
@@ -449,11 +469,16 @@ class AgentBrain:
             self.move_to(pre_agent_cell)
             print("Backtrack: ", end='')
             print(pre_agent_cell.map_pos)
+            self.append_event_to_output_file('Backtrack: ' + str(pre_agent_cell.map_pos))
 
         return True
 
 
     def solve_wumpus_world(self):
+        # Reset file output
+        out_file = open(self.output_filename, 'w')
+        out_file.close()
+
         self.backtracking_search()
 
         victory_flag = True

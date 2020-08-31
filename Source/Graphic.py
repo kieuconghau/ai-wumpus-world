@@ -128,7 +128,7 @@ class Graphic:
             elif self.state == RUNNING:
                 self.state = TRYBEST
 
-                action_list, cave_cell, cell_matrix = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1]).solve_wumpus_world()
+                action_list, cave_cell, cell_matrix = Algorithms.AgentBrain(MAP_LIST[self.map_i - 1], OUTPUT_LIST[self.map_i - 1]).solve_wumpus_world()
                 map_pos = cave_cell.map_pos  # Theo tọa độ của thầy.
 
                 self.map = Map((len(cell_matrix) - map_pos[1] + 1, map_pos[0]))

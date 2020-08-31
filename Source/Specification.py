@@ -24,6 +24,7 @@ IMG_ARROW_RIGHT = '../Assets/Images/arrow_right.png'
 IMG_ARROW_LEFT = '../Assets/Images/arrow_left.png'
 IMG_ARROW_UP = '../Assets/Images/arrow_up.png'
 IMG_ARROW_DOWN = '../Assets/Images/arrow_down.png'
+
 # Map
 MAP_LIST = ['../Assets/Input/map_1.txt',
             '../Assets/Input/map_2.txt',
@@ -31,6 +32,13 @@ MAP_LIST = ['../Assets/Input/map_1.txt',
             '../Assets/Input/map_4.txt',
             '../Assets/Input/map_5.txt']
 MAP_NUM = len(MAP_LIST)
+
+# Output
+OUTPUT_LIST = ['../Assets/Output/result_1.txt',
+               '../Assets/Output/result_2.txt',
+               '../Assets/Output/result_3.txt',
+               '../Assets/Output/result_4.txt',
+               '../Assets/Output/result_5.txt']
 
 # Fonts
 FONT_MRSMONSTER = '../Assets/Fonts/mrsmonster.ttf'
@@ -42,7 +50,7 @@ LIGHT_GREY = (170, 170, 170)
 DARK_GREY = (75, 75, 75)
 RED = (255, 0, 0)
 
-#state
+# state
 RUNNING = 'running'
 GAMEOVER = 'gameover'
 WIN = 'win'
