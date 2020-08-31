@@ -7,6 +7,8 @@ class Map:
         self.size = 10
         self.cell_size = 60
         self.cell = pygame.image.load(IMG_INITIAL_CELL).convert()
+        self.pit = pygame.image.load(IMG_PIT).convert()
+        self.pit_discover = [[False for i in range(self.size)] for j in range(self.size)]
         self.discover_cell = pygame.image.load(IMG_DISCOVERED_CELL).convert()
         self.is_discover = [[False for i in range(self.size)] for j in range(self.size)]
         self.is_discover[init_agent_pos[0] - 1][init_agent_pos[1] - 1] = True
@@ -20,9 +22,13 @@ class Map:
                 if(self.is_discover[i][j]):
                     screen.blit(self.discover_cell, (x, y))
                     x += self.space + self.cell_size
-                else:
-                    screen.blit(self.cell, (x, y))
-                    x += self.space + self.cell_size
+                elif not self.is_discover[i][j]:
+                    if self.pit_discover[i][j]:
+                        screen.blit(self.pit, (x, y))
+                        x += self.space + self.cell_size
+                    else:
+                        screen.blit(self.cell, (x, y))
+                        x += self.space + self.cell_size
             y += self.space + self.cell_size
             x = self.space
 
@@ -40,3 +46,6 @@ class Map:
         text = font.render('Score + 10', True, BLACK)
         textRect.center = (850, 150)
         screen.blit(text, textRect)
+
+    def pit_detect(self, i, j):
+        self.pit_discover[i][j] = True

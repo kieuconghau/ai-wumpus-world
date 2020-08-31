@@ -63,7 +63,7 @@ class AgentBrain:
                     self.init_agent_cell = copy.deepcopy(self.agent_cell)
 
         file.close()
-        self.init_cell_matrix = self.cell_matrix.copy()
+        self.init_cell_matrix = copy.deepcopy(self.cell_matrix)
 
         result, pos = self.is_valid_map()
         if not result:
@@ -286,7 +286,8 @@ class AgentBrain:
             self.add_new_percepts_to_KB(self.agent_cell)
 
         # Initialize valid_adj_cell_list from adj_cell_list.
-        valid_adj_cell_list = adj_cell_list.copy()
+        valid_adj_cell_list = copy.copy(adj_cell_list)
+        #valid_adj_cell_list = adj_cell_list.copy()
 
         # Discard the parent_cell from the valid_adj_cell_list.
         temp_adj_cell_list = []
